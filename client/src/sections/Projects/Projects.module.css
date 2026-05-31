@@ -1,0 +1,213 @@
+/* ============================================================
+   Projects.module.css — Horizontal Strip
+   ============================================================ */
+
+/* ---- SECTION ---- */
+.projects {
+  position:       relative;
+  padding-top:    var(--section-padding);
+  padding-bottom: var(--section-padding);
+  z-index:        var(--z-base, 1);
+}
+
+/* ---- HEADER — inside max-width container ---- */
+.header {
+  width:           100%;
+  max-width:       var(--max-width, 1200px);
+  margin:          0 auto;
+  padding:         0 var(--content-padding);
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  margin-bottom:   var(--space-6, 24px);
+}
+
+/* ---- DRAG HINT ---- */
+.dragHint {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3, 12px);
+}
+
+.dragLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+.dragArrow {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:   var(--text-xs, 0.65rem);
+  color:       var(--color-ink-ghost, #B5AA96);
+  animation:   arrow-nudge 1.8s ease-in-out infinite;
+}
+
+.dragArrow:last-child { animation-delay: 0.4s; }
+
+@keyframes arrow-nudge {
+  0%, 100% { transform: translateX(0);    opacity: 0.5; }
+  50%       { transform: translateX(3px); opacity: 1;   }
+}
+
+/* ---- STRIP WRAPPER — full viewport width ---- */
+.stripWrap {
+  position:   relative;
+  width:      100vw;
+  left:       50%;
+  transform:  translateX(-50%);
+  overflow:   hidden;
+  cursor:     grab;
+  /* Prevent text selection while dragging */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.stripWrap.dragging {
+  cursor: grabbing;
+}
+
+/* ---- TRACK — the moving strip ---- */
+.track {
+  display:     flex;
+  align-items: stretch;
+  gap:         var(--space-4, 16px);
+  padding:     0 var(--content-padding);
+  width:       max-content;
+  /* GPU layer for smooth dragging */
+  will-change: transform;
+}
+
+/* ---- CARD SLOT ---- */
+.cardSlot {
+  flex-shrink: 0;
+  width:       320px;
+  /* Portrait height — taller than wide */
+  height:      440px;
+}
+
+/* Featured card — 2× width */
+.cardSlotFeatured {
+  width: 480px;
+}
+
+/* ---- END CAP ---- */
+.endCap {
+  flex-shrink:     0;
+  width:           120px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding-right:   var(--content-padding);
+}
+
+.endCapText {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  color:          var(--color-ink-ghost, #B5AA96);
+  white-space:    nowrap;
+  opacity:        0.5;
+}
+
+/* ---- EDGE FADES ---- */
+.edgeFade {
+  position:       absolute;
+  top:            0;
+  bottom:         0;
+  width:          120px;
+  pointer-events: none;
+  z-index:        2;
+}
+
+.edgeFadeLeft {
+  left:       0;
+  background: linear-gradient(
+    to right,
+    var(--color-bg, #F5F0E8) 0%,
+    transparent 100%
+  );
+}
+
+.edgeFadeRight {
+  right:      0;
+  background: linear-gradient(
+    to left,
+    var(--color-bg, #F5F0E8) 0%,
+    transparent 100%
+  );
+}
+
+/* ---- FOOTER — count annotation ---- */
+.footer {
+  width:      100%;
+  max-width:  var(--max-width, 1200px);
+  margin:     var(--space-6, 24px) auto 0;
+  padding:    0 var(--content-padding);
+}
+
+.footerLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+/* ============================================================
+   CARD — portrait orientation override
+   ProjectCard.jsx uses styles from Projects.module.css for
+   the card itself — height is controlled by the slot.
+   ============================================================ */
+
+/* Force card to fill its portrait slot */
+.cardSlot > * {
+  height: 100%;
+}
+
+/* ============================================================
+   RESPONSIVE — vertical stack on mobile
+   ============================================================ */
+@media (max-width: 768px) {
+  .stripWrap {
+    width:     100%;
+    left:      auto;
+    transform: none;
+    overflow:  visible;
+    cursor:    default;
+  }
+
+  .track {
+    flex-direction: column;
+    width:          100%;
+    padding:        0 var(--content-padding);
+    gap:            var(--space-5, 20px);
+  }
+
+  .cardSlot,
+  .cardSlotFeatured {
+    width:  100%;
+    height: auto;
+    min-height: 280px;
+  }
+
+  .edgeFade { display: none; }
+
+  .dragHint { display: none; }
+
+  .endCap { display: none; }
+}
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+  .stripWrap {
+    cursor: default;
+  }
+  .dragArrow {
+    animation: none;
+  }
+}

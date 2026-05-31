@@ -1,0 +1,75 @@
+/* ============================================================
+   SectionLabel.module.css
+   Ronak Vaghela Portfolio — Section Label Styles
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   WRAPPER
+   Inline flex row — number, dash, and label on one line.
+   ------------------------------------------------------------ */
+.wrapper {
+  display:     inline-flex;
+  align-items: center;
+  gap:         var(--space-3, 12px);
+}
+
+.right {
+  flex-direction: row-reverse;
+}
+
+/* ------------------------------------------------------------
+   TICK RULE
+   A short horizontal line — like a ruler's measurement tick.
+   28px wide, 0.5px tall, in --color-stroke.
+   ------------------------------------------------------------ */
+.tick {
+  display:    block;
+  width:      28px;
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------
+   NUMBER
+   JetBrains Mono, all-caps tracking, ghost ink.
+   ------------------------------------------------------------ */
+.number {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  color:          var(--color-ink-ghost, #B5AA96);
+  line-height:    1;
+  white-space:    nowrap;
+}
+
+/* ------------------------------------------------------------
+   DASH SEPARATOR
+   ------------------------------------------------------------ */
+.dash {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:   var(--text-xs, 0.65rem);
+  font-weight: 400;
+  color:       var(--color-ink-ghost, #B5AA96);
+  line-height: 1;
+  /* Tighten the gap so it reads as a unified string */
+  margin-left:  calc(-1 * var(--space-2, 8px));
+  margin-right: calc(-1 * var(--space-1, 4px));
+}
+
+/* ------------------------------------------------------------
+   LABEL
+   JetBrains Mono, tracked, secondary ink — slightly more
+   visible than the number but not dominant.
+   ------------------------------------------------------------ */
+.label {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary, #7A6E5F);
+  line-height:    1;
+  white-space:    nowrap;
+}

@@ -1,0 +1,490 @@
+/* ============================================================
+   Hero.module.css — Ronak Vaghela Portfolio
+   REBUILT: denser, richer, more spatial
+   ============================================================ */
+
+/* ---- SECTION ---- */
+.hero {
+  position:       relative;
+  min-height:     100svh;
+  padding-top:    calc(var(--nav-height, 56px) + var(--space-12, 48px));
+  padding-bottom: var(--space-12, 48px);
+  z-index:        var(--z-base, 1);
+  display:        flex;
+  flex-direction: column;
+}
+
+.heroInner {
+  width:     100%;
+  max-width: var(--max-width, 1200px);
+  margin:    0 auto;
+  padding:   0 var(--content-padding);
+  flex:      1;
+  display:   flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   TOP META ROW
+   Small mono labels above the name — location, availability
+   ============================================================ */
+.topMeta {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  margin-bottom:   var(--space-6, 24px);
+}
+
+.topMetaLeft,
+.topMetaRight {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-4, 16px);
+}
+
+.metaItem {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--space-2, 8px);
+}
+
+.metaDot {
+  display:       block;
+  width:         5px;
+  height:        5px;
+  border-radius: 50%;
+  background:    var(--color-accent, #8B5E3C);
+  animation:     pulse-dot 2.6s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1;    transform: scale(1);    }
+  50%       { opacity: 0.3; transform: scale(0.72); }
+}
+
+.metaDivider {
+  display:    block;
+  width:      0.5px;
+  height:     12px;
+  background: var(--color-stroke, #C4B89A);
+}
+
+/* ============================================================
+   NAME BLOCK
+   Oversized — bleeds to viewport edges, not container edges.
+   Outline ghost layer sits behind the solid name.
+   ============================================================ */
+.nameBlock {
+  /* Break out of the heroInner max-width container */
+  position:      relative;
+  width:         100vw;
+  left:          50%;
+  transform:     translateX(-50%);
+  margin-bottom: var(--space-4, 16px);
+  overflow:      hidden;
+  padding:       0 var(--content-padding);
+}
+
+/* Solid name — the primary layer */
+.heroName {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      clamp(4.5rem, 13vw, 11rem);
+  font-weight:    300;
+  line-height:    0.95;
+  letter-spacing: -0.04em;
+  color:          var(--color-ink-primary, #2C2416);
+  display:        block;
+  width:          100%;
+  opacity:        0; /* GSAP */
+  position:       relative;
+  z-index:        2;
+  /* Allow the second line to indent — creates asymmetry */
+  white-space:    nowrap;
+}
+
+/* Outline ghost name — sits behind, offset down-right */
+.heroNameOutline {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      clamp(4.5rem, 13vw, 11rem);
+  font-weight:    300;
+  line-height:    0.95;
+  letter-spacing: -0.04em;
+  display:        block;
+  width:          100%;
+  position:       absolute;
+  top:            0.12em;
+  left:           calc(var(--content-padding) + 0.06em);
+  z-index:        1;
+  /* SVG text stroke — outline only, no fill */
+  -webkit-text-stroke: 0.5px var(--color-stroke, #C4B89A);
+  color:               transparent;
+  white-space:         nowrap;
+  pointer-events:      none;
+  user-select:         none;
+  opacity:             0; /* GSAP */
+}
+
+/* ============================================================
+   HERO RULE — accent #3 of 4
+   ============================================================ */
+.heroRule {
+  width:            100%;
+  height:           0.5px;
+  background:       var(--color-accent, #8B5E3C);
+  transform-origin: left center;
+  transform:        scaleX(0); /* GSAP */
+  margin-bottom:    var(--space-8, 32px);
+  margin-top:       var(--space-5, 20px);
+}
+
+/* ============================================================
+   HERO BODY — two column
+   ============================================================ */
+.heroBody {
+  display:               grid;
+  grid-template-columns: 1fr 420px;
+  gap:                   var(--space-12, 48px);
+  align-items:           start;
+  flex:                  1;
+}
+
+/* ============================================================
+   LEFT COLUMN
+   ============================================================ */
+.leftCol {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-6, 24px);
+  padding-top:    var(--space-2, 8px);
+}
+
+.role {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary, #7A6E5F);
+}
+
+.bio {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size:   var(--text-md, clamp(1rem, 0.9rem + 0.45vw, 1.125rem));
+  font-weight: 300;
+  line-height: 1.7;
+  color:       var(--color-ink-secondary, #7A6E5F);
+  max-width:   480px;
+}
+
+/* Education summary block */
+.eduSummary {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  padding:        var(--space-4, 16px);
+  border:         0.5px solid var(--color-stroke, #C4B89A);
+  background:     var(--color-accent-faint, rgba(139,94,60,0.07));
+  line-height:    1.8;
+}
+
+/* Stats row — CGPA + internships */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:     var(--space-1, 4px);
+}
+
+.statItem {
+  padding:        var(--space-4, 16px);
+  border:         0.5px solid var(--color-stroke, #C4B89A);
+  background:     var(--color-surface, #EDE8DC);
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1, 4px);
+}
+
+.statValue {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      var(--text-xl, clamp(1.75rem, 1.2rem + 2vw, 2.5rem));
+  font-weight:    300;
+  line-height:    1;
+  color:          var(--color-ink-primary, #2C2416);
+  letter-spacing: -0.02em;
+  /* Number lands with a very subtle colour shift */
+  transition:     color 0.3s ease;
+}
+
+/* When counting completes the number settles to ink-primary */
+.statValue:has(span) {
+  color: var(--color-ink-primary, #2C2416);
+}
+
+.statLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+/* CTA row */
+.ctaRow {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-4, 16px);
+  flex-wrap:   wrap;
+}
+
+/* Social links */
+.socialRow {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-3, 12px);
+  padding-top: var(--space-2, 8px);
+  border-top:  0.5px solid var(--color-stroke, #C4B89A);
+}
+
+.socialLink {
+  font-family:     var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:       var(--text-xs, 0.65rem);
+  font-weight:     400;
+  letter-spacing:  var(--tracking-mono, 0.12em);
+  text-transform:  uppercase;
+  color:           var(--color-ink-ghost, #B5AA96);
+  text-decoration: none;
+  transition:      color var(--duration-base, 240ms) ease;
+}
+
+.socialLink:hover { color: var(--color-ink-secondary, #7A6E5F); }
+
+.socialDot {
+  display:       block;
+  width:         2px;
+  height:        2px;
+  background:    var(--color-stroke, #C4B89A);
+  border-radius: 50%;
+  flex-shrink:   0;
+}
+
+/* ============================================================
+   RIGHT COLUMN — PHOTO
+   ============================================================ */
+.rightCol {
+  position: relative;
+}
+
+.photoWrap {
+  position:   relative;
+  overflow:   hidden;
+  clip-path:  polygon(0 0, 100% 2%, 98% 100%, 1% 98%);
+  background: var(--color-surface, #EDE8DC);
+}
+
+.photo {
+  width:       100%;
+  height:      520px;
+  object-fit:  cover;
+  object-position: center top;
+  display:     block;
+  filter:      sepia(0.35) contrast(1.05) brightness(0.95);
+  transition:  filter var(--duration-slow, 400ms) ease;
+}
+
+.photo:hover {
+  filter: sepia(0.15) contrast(1.08) brightness(0.98);
+}
+
+/* No-photo fallback — monogram placeholder */
+.photoFallback {
+  width:           100%;
+  height:          520px;
+  background:      var(--color-surface, #EDE8DC);
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             var(--space-4, 16px);
+}
+
+.photoFallbackMonogram {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      clamp(4rem, 6vw, 7rem);
+  font-weight:    300;
+  color:          var(--color-ink-ghost, #B5AA96);
+  letter-spacing: -0.02em;
+  line-height:    1;
+}
+
+.photoFallbackLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  opacity:        0.6;
+}
+
+.photoOverlay {
+  position:      absolute;
+  inset:         0;
+  background:    rgba(139, 94, 60, 0.08);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Corner marks on photo */
+.cornerMark {
+  position:   absolute;
+  display:    block;
+  width:      16px;
+  height:     16px;
+  transition:
+    width  var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)),
+    height var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1));
+}
+
+.photoWrap:hover .cornerMark { width: 24px; height: 24px; }
+
+.cornerTL { top: 8px; left: 8px; border-top: 0.5px solid var(--color-stroke-dark, #8B5E3C); border-left: 0.5px solid var(--color-stroke-dark, #8B5E3C); }
+.cornerTR { top: 8px; right: 8px; border-top: 0.5px solid var(--color-stroke-dark, #8B5E3C); border-right: 0.5px solid var(--color-stroke-dark, #8B5E3C); }
+.cornerBL { bottom: 8px; left: 8px; border-bottom: 0.5px solid var(--color-stroke-dark, #8B5E3C); border-left: 0.5px solid var(--color-stroke-dark, #8B5E3C); }
+.cornerBR { bottom: 8px; right: 8px; border-bottom: 0.5px solid var(--color-stroke-dark, #8B5E3C); border-right: 0.5px solid var(--color-stroke-dark, #8B5E3C); }
+
+/* Photo annotation — bottom-left */
+.photoAnnotation {
+  position:   absolute;
+  bottom:     var(--space-4, 16px);
+  left:       var(--space-4, 16px);
+  background: rgba(245, 240, 232, 0.88);
+  padding:    var(--space-2, 8px) var(--space-3, 12px);
+  border:     0.5px solid var(--color-stroke, #C4B89A);
+  opacity:    0; /* GSAP */
+}
+
+/* Annotations beside name */
+.annotationLeft, .annotationRight {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-2, 8px);
+  opacity:     0; /* GSAP */
+}
+
+.annotationLine {
+  display:    block;
+  width:      20px;
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+  flex-shrink: 0;
+}
+
+.annotationText {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  white-space:    nowrap;
+}
+
+/* Scroll nudge */
+.scrollNudge {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            var(--space-2, 8px);
+  margin-top:     var(--space-10, 40px);
+  opacity:        0.45;
+  animation:      scroll-nudge 2.2s ease-in-out 2.5s 3 both;
+}
+
+.scrollLine {
+  display:    block;
+  width:      0.5px;
+  height:     32px;
+  background: var(--color-stroke, #C4B89A);
+}
+
+.scrollLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+@keyframes scroll-nudge {
+  0%, 100% { transform: translateY(0);   opacity: 0.45; }
+  50%       { transform: translateY(6px); opacity: 0.8;  }
+}
+
+/* ============================================================
+   NAME ROW — layout for annotations beside name
+   ============================================================ */
+.nameRow {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-4, 16px);
+  margin-bottom: var(--space-2, 8px);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .heroBody {
+    grid-template-columns: 1fr;
+    gap:                   var(--space-8, 32px);
+  }
+
+  .rightCol {
+    order: -1;
+  }
+
+  .photo,
+  .photoFallback {
+    height: 340px;
+  }
+
+  .statsRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .topMeta {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .statsRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ctaRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroName, .heroNameOutline, .heroRule, .photoAnnotation, .annotationLeft, .annotationRight {
+    opacity: 1 !important; transform: none !important;
+  }
+  .scrollNudge, .metaDot { animation: none; }
+}
+
+@media print {
+  .scrollNudge, .topMeta { display: none; }
+  .hero { min-height: auto; }
+}

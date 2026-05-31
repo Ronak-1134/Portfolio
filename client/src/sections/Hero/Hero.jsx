@@ -1,0 +1,235 @@
+/* ============================================================
+   Hero.jsx — Ronak Vaghela Portfolio (rebuilt for density)
+   ============================================================ */
+
+import { useEffect, useRef } from 'react';
+import { gsap }              from '../../utils/gsapConfig';
+import { useReducedMotion }  from '../../hooks/useReducedMotion';
+import Button                from '../../components/ui/Button';
+import CountUp               from '../../components/CountUp/CountUp';
+import Clock                 from '../../components/Clock/Clock';
+import styles                from './Hero.module.css';
+
+const BIO = 'Computer Engineering student at LDCE Ahmedabad building full-stack systems with clean architecture and a bias for performance. Interned at TatvaSoft and IBM. Interested in AI, systems design, and problems worth solving.';
+const EDUCATION_SUMMARY = 'B.E Computer Engineering · LDCE, Ahmedabad (GTU) · 2022–26';
+
+const STATS = [
+  { target: 7.92,  decimals: 2, suffix: '',   label: 'CGPA',             duration: 1600 },
+  { target: 2,     decimals: 0, suffix: '',   label: 'Internships',       duration: 900  },
+  { target: 300,   decimals: 0, suffix: '+',  label: 'Problems solved',   duration: 1800 },
+];
+
+export default function Hero() {
+  const prefersReduced = useReducedMotion();
+
+  const sectionRef      = useRef(null);
+  const nameRef         = useRef(null);
+  const nameOutlineRef  = useRef(null);
+  const ruleRef         = useRef(null);
+  const leftColRef      = useRef(null);
+  const photoWrapRef    = useRef(null);
+  const annoRefs        = useRef([]);
+
+  /* Entrance animation */
+  useEffect(() => {
+    if (prefersReduced) return;
+    const tl = gsap.timeline({ delay: 0.15 });
+
+    /* Outline fades in first — ghost behind the solid name */
+    tl.fromTo(nameOutlineRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.7, ease: 'power2.out' }
+    );
+    /* Solid name rises through it */
+    tl.fromTo(nameRef.current,
+      { opacity: 0, y: 56 },
+      { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' },
+      '-=0.4'
+    );
+    tl.fromTo(ruleRef.current,
+      { scaleX: 0 },
+      { scaleX: 1, duration: 0.9, ease: 'power3.out', transformOrigin: 'left center' },
+      '-=0.45'
+    );
+    if (leftColRef.current?.children) {
+      tl.fromTo(Array.from(leftColRef.current.children),
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.09 },
+        '-=0.55'
+      );
+    }
+    tl.fromTo(photoWrapRef.current,
+      { clipPath: 'inset(0 100% 0 0)' },
+      { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease: 'power3.inOut' },
+      '-=0.7'
+    );
+    const annos = annoRefs.current.filter(Boolean);
+    if (annos.length) {
+      tl.fromTo(annos,
+        { opacity: 0, x: -6 },
+        { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out', stagger: 0.07 },
+        '-=0.5'
+      );
+    }
+    return () => tl.kill();
+  }, [prefersReduced]);
+
+  /* Scroll parallax on photo */
+  useEffect(() => {
+    if (prefersReduced || !photoWrapRef.current) return;
+    const tween = gsap.to(photoWrapRef.current, {
+      y: '-7%', ease: 'none',
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top top', end: 'bottom top', scrub: 1.5,
+      },
+    });
+    return () => tween.scrollTrigger?.kill();
+  }, [prefersReduced]);
+
+  /* Check if photo exists */
+  const [hasPhoto, setHasPhoto] = useRef(false) && [false, () => {}];
+
+  return (
+    <section ref={sectionRef} className={styles.hero} id="hero" aria-label="Introduction">
+      <div className={styles.heroInner}>
+
+        {/* TOP META ROW */}
+        <div className={styles.topMeta}>
+          <div className={styles.topMetaLeft}>
+            <span className={styles.metaItem}>
+              <span className={styles.metaDot} />
+              Available for roles
+            </span>
+            <span className={styles.metaDivider} />
+            <span className={styles.metaItem}>Ahmedabad, Gujarat</span>
+          </div>
+          <div className={styles.topMetaRight}>
+            <span className={styles.metaItem}>Full-Stack · AI · Systems</span>
+            <span className={styles.metaDivider} />
+            <Clock />
+          </div>
+        </div>
+
+        {/* NAME */}
+        <div className={styles.nameBlock}>
+          {/* Outline ghost — sits behind, offset */}
+          <h1
+            ref={nameOutlineRef}
+            className={styles.heroNameOutline}
+            aria-hidden="true"
+          >
+            Ronak Vaghela
+          </h1>
+          {/* Solid name — the primary layer */}
+          <h1 ref={nameRef} className={styles.heroName}>
+            Ronak Vaghela
+          </h1>
+        </div>
+
+        {/* SEPIA RULE — accent #3 of 4 */}
+        <div ref={ruleRef} className={styles.heroRule} aria-hidden="true" />
+
+        {/* TWO COLUMN BODY */}
+        <div className={styles.heroBody}>
+
+          {/* LEFT */}
+          <div ref={leftColRef} className={styles.leftCol}>
+
+            <p className={styles.role}>Full-Stack Developer &amp; AI Enthusiast</p>
+
+            <p className={styles.bio}>{BIO}</p>
+
+            <p className={styles.eduSummary}>{EDUCATION_SUMMARY}</p>
+
+            {/* Stats */}
+            <div className={styles.statsRow}>
+              {STATS.map(s => (
+                <div key={s.label} className={styles.statItem}>
+                  <span className={styles.statValue}>
+                    <CountUp
+                      target={s.target}
+                      decimals={s.decimals}
+                      suffix={s.suffix}
+                      duration={s.duration}
+                    />
+                  </span>
+                  <span className={styles.statLabel}>{s.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <div className={styles.ctaRow}>
+              <Button variant="primary" onClick={() =>
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+              }>
+                Draw up a brief
+              </Button>
+              <Button variant="ghost" onClick={() =>
+                document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
+              }>
+                View work
+              </Button>
+            </div>
+
+            {/* Socials */}
+            <div className={styles.socialRow}>
+              <a href="https://github.com/ronakvaghela" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>GitHub</a>
+              <span className={styles.socialDot} aria-hidden="true" />
+              <a href="https://linkedin.com/in/ronak-vaghela" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>LinkedIn</a>
+              <span className={styles.socialDot} aria-hidden="true" />
+              <a href="mailto:ronakvaghela3355@gmail.com" className={styles.socialLink}>Email</a>
+            </div>
+          </div>
+
+          {/* RIGHT — PHOTO */}
+          <div className={styles.rightCol}>
+            <div ref={photoWrapRef} className={styles.photoWrap}>
+
+              {/* Try loading photo; show fallback monogram if missing */}
+              <img
+                src="/ronak-vaghela.jpg"
+                alt="Ronak Vaghela"
+                className={styles.photo}
+                loading="eager"
+                draggable="false"
+                onError={e => {
+                  e.target.style.display = 'none';
+                  e.target.nextElementSibling.style.display = 'flex';
+                }}
+              />
+              <div className={styles.photoFallback} style={{ display: 'none' }}>
+                <span className={styles.photoFallbackMonogram}>RV</span>
+                <span className={styles.photoFallbackLabel}>Add photo → /public/ronak-vaghela.jpg</span>
+              </div>
+
+              <div className={styles.photoOverlay} aria-hidden="true" />
+
+              <span className={`${styles.cornerMark} ${styles.cornerTL}`} aria-hidden="true" />
+              <span className={`${styles.cornerMark} ${styles.cornerTR}`} aria-hidden="true" />
+              <span className={`${styles.cornerMark} ${styles.cornerBL}`} aria-hidden="true" />
+              <span className={`${styles.cornerMark} ${styles.cornerBR}`} aria-hidden="true" />
+
+              <div
+                className={styles.photoAnnotation}
+                ref={el => annoRefs.current[0] = el}
+                aria-hidden="true"
+              >
+                <span className={styles.annotationText}>Ahmedabad, 2024</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* SCROLL NUDGE */}
+        <div className={styles.scrollNudge} aria-hidden="true">
+          <span className={styles.scrollLine} />
+          <span className={styles.scrollLabel}>scroll</span>
+        </div>
+
+      </div>
+    </section>
+  );
+}

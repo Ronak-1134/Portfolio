@@ -1,0 +1,156 @@
+/* ============================================================
+   Loader.module.css
+   Ronak Vaghela Portfolio — Loader Overlay Styles
+
+   The canvas handles all drawing.
+   This file handles the wrapper, exit transition,
+   and the subtle skip hint at the bottom.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   WRAPPER
+   Fixed full-screen overlay. Sits above everything except
+   the custom cursor (z-9998 vs cursor z-9999).
+   ------------------------------------------------------------ */
+.loaderWrapper {
+  position:        fixed;
+  inset:           0;
+  z-index:         var(--z-loader, 9998);
+  background-color: var(--color-bg, #F5F0E8);
+  cursor:          none;
+
+  /* Remove outline — this is a visual element, not a form control */
+  outline:         none;
+
+  /* Prevent any content bleed-through during initial paint */
+  overflow:        hidden;
+}
+
+/* ------------------------------------------------------------
+   CANVAS
+   Fills the wrapper exactly.
+   position: absolute so it doesn't affect wrapper layout.
+   ------------------------------------------------------------ */
+.canvas {
+  display:  block;
+  position: absolute;
+  inset:    0;
+  width:    100%;
+  height:   100%;
+}
+
+/* ------------------------------------------------------------
+   EXIT STATE
+   Applied by JS when T_EXIT_START is reached, or on click.
+   The loader fades out and slightly scales — like turning
+   a transparency over to reveal the drawing beneath.
+   ------------------------------------------------------------ */
+.exiting {
+  animation:         loader-exit 0.5s var(--ease-in-out, cubic-bezier(0.45, 0, 0.55, 1)) forwards;
+  pointer-events:    none;
+}
+
+@keyframes loader-exit {
+  0% {
+    opacity:   1;
+    transform: scale(1);
+  }
+  100% {
+    opacity:   0;
+    transform: scale(1.008);
+  }
+}
+
+/* ------------------------------------------------------------
+   SKIP HINT
+   Appears after 800ms — subtle, never demanding.
+   JetBrains Mono, ghost ink, bottom-center.
+   Pulses softly to signal interactivity.
+   ------------------------------------------------------------ */
+.skipHint {
+  position:    absolute;
+  bottom:      var(--space-8, 32px);
+  left:        50%;
+  transform:   translateX(-50%);
+  pointer-events: none;
+
+  /* Delayed appearance — 800ms after mount */
+  animation:
+    skip-hint-in   0.4s ease-out 0.8s both,
+    skip-hint-pulse 2.4s ease-in-out 1.4s infinite;
+}
+
+@keyframes skip-hint-in {
+  from {
+    opacity:   0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity:   0.4;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes skip-hint-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.15; }
+}
+
+/* Hide skip hint when exiting */
+.exiting .skipHint {
+  display: none;
+}
+
+/* ------------------------------------------------------------
+   SKIP TEXT
+   JetBrains Mono, all-caps, tracked — blueprint notation feel.
+   ------------------------------------------------------------ */
+.skipText {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+
+  /* Crosshair cursor indicator beside the text */
+  display:        flex;
+  align-items:    center;
+  gap:            8px;
+}
+
+/* Small crosshair icon before the text */
+.skipText::before {
+  content:     '';
+  display:     inline-block;
+  width:       10px;
+  height:      10px;
+  border:      0.5px solid currentColor;
+  border-radius: 0;
+  position:    relative;
+  flex-shrink: 0;
+}
+
+/* Crosshair lines inside the box */
+.skipText::after {
+  content:    none;
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION
+   Skip the animation entirely — show content immediately.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .loaderWrapper {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   PRINT — loader never appears in print
+   ------------------------------------------------------------ */
+@media print {
+  .loaderWrapper {
+    display: none;
+  }
+}

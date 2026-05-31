@@ -1,0 +1,306 @@
+/* ============================================================
+   Education.module.css
+   Ronak Vaghela Portfolio — Education Section Styles
+
+   Aesthetic: a filled-in academic form found in a portfolio case.
+   Warm, precise, legible. Every cell considered.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   SECTION
+   ------------------------------------------------------------ */
+.section {
+  position:       relative;
+  background:     transparent;
+  padding-top:    var(--section-padding);
+  padding-bottom: var(--section-padding);
+  z-index:        var(--z-base, 1);
+}
+
+/* ------------------------------------------------------------
+   LABEL ROW — section number + heading row
+   ------------------------------------------------------------ */
+.labelRow {
+  margin-bottom: var(--space-6, 24px);
+}
+
+/* ------------------------------------------------------------
+   HEADING
+   ------------------------------------------------------------ */
+.heading {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      var(--text-2xl, clamp(2.5rem, 1.5rem + 4vw, 4.5rem));
+  font-weight:    300;
+  line-height:    var(--leading-display, 1.1);
+  letter-spacing: var(--tracking-tight, -0.02em);
+  color:          var(--color-ink-primary, #2C2416);
+  margin-bottom:  var(--space-12, 48px);
+}
+
+/* ------------------------------------------------------------
+   RULER
+   SVG ruler sits above the table, spans its full width.
+   The scaleX reveal animation is applied via GSAP.
+   ------------------------------------------------------------ */
+.rulerWrapper {
+  width:         100%;
+  margin-bottom: 0;  /* Ruler bottom edge becomes table top edge */
+  transform-origin: left center;
+  /* GSAP initial state */
+  opacity:       0;
+  will-change:   transform, opacity;
+}
+
+.ruler {
+  display: block;
+  width:   100%;
+  height:  28px;
+  overflow: visible;
+}
+
+/* ------------------------------------------------------------
+   TABLE WRAPPER
+   Allows horizontal scroll on narrow viewports without
+   breaking the page layout.
+   ------------------------------------------------------------ */
+.tableWrapper {
+  width:    100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ------------------------------------------------------------
+   TABLE
+   border-collapse: collapse — all 0.5px borders meet cleanly.
+   width: 100% — fills the wrapper.
+   ------------------------------------------------------------ */
+.table {
+  width:           100%;
+  border-collapse: collapse;
+  border-spacing:  0;
+  table-layout:    fixed;
+}
+
+/* ------------------------------------------------------------
+   HEADER ROW
+   JetBrains Mono, all-caps, tracked — blueprint column labels.
+   ------------------------------------------------------------ */
+.headerRow {
+  border-bottom: 0.5px solid var(--color-stroke, #C4B89A);
+}
+
+.th {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  padding:        var(--space-4, 16px) var(--space-4, 16px);
+  text-align:     left;
+  white-space:    nowrap;
+  border-top:     0.5px solid var(--color-stroke, #C4B89A);
+  border-right:   0.5px solid var(--color-stroke, #C4B89A);
+}
+
+.th:first-child {
+  border-left: 0.5px solid var(--color-stroke, #C4B89A);
+}
+
+/* Column widths */
+.table colgroup col:nth-child(1) { width: 22%; }  /* Examination */
+.table colgroup col:nth-child(2) { width: 10%; }  /* Board       */
+.table colgroup col:nth-child(3) { width: 38%; }  /* Institution */
+.table colgroup col:nth-child(4) { width: 12%; }  /* Year        */
+.table colgroup col:nth-child(5) { width: 18%; }  /* Result      */
+
+.thCenter { text-align: center; }
+.thRight  { text-align: right;  }
+
+/* ------------------------------------------------------------
+   TABLE ROWS
+   Each row has a bottom border. The B.E row (featured) has
+   a slightly more prominent appearance — the current degree.
+   ------------------------------------------------------------ */
+.row {
+  border-bottom: 0.5px solid var(--color-stroke, #C4B89A);
+  /* GSAP initial state */
+  opacity:    0;
+  will-change: transform, opacity;
+  transition:  background-color var(--duration-fast, 160ms) var(--ease-hover);
+}
+
+.row:hover {
+  background-color: var(--color-surface, #EDE8DC);
+}
+
+/* B.E row — featured, current degree */
+.rowFeatured {
+  background-color: var(--color-accent-faint, rgba(139, 94, 60, 0.07));
+}
+
+.rowFeatured:hover {
+  background-color: var(--color-surface-hover, #E5DFD0);
+}
+
+/* ------------------------------------------------------------
+   TABLE CELLS
+   ------------------------------------------------------------ */
+.td {
+  padding:     var(--space-5, 20px) var(--space-4, 16px);
+  vertical-align: middle;
+  border-right: 0.5px solid var(--color-stroke, #C4B89A);
+}
+
+.td:first-child {
+  border-left: 0.5px solid var(--color-stroke, #C4B89A);
+}
+
+.tdCenter { text-align: center; }
+.tdRight  { text-align: right;  }
+
+/* ------------------------------------------------------------
+   CELL CONTENT STYLES
+   ------------------------------------------------------------ */
+
+/* Examination name — DM Sans, body weight */
+.examinationName {
+  display:     block;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size:   var(--text-sm, 0.75rem);
+  font-weight: 400;
+  color:       var(--color-ink-primary, #2C2416);
+  line-height: 1.3;
+}
+
+/* Board — mono, tracked, muted */
+.boardName {
+  display:        block;
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary, #7A6E5F);
+}
+
+/* Institution — Cormorant italic, the most elegant cell */
+.institutionName {
+  display:     block;
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size:   var(--text-md, clamp(1rem, 0.9rem + 0.45vw, 1.125rem));
+  font-weight: 300;
+  font-style:  italic;
+  color:       var(--color-ink-primary, #2C2416);
+  line-height: 1.2;
+}
+
+/* Location — mono, ghost ink, below institution name */
+.institutionLocation {
+  display:        block;
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.6rem;
+  font-weight:    400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  margin-top:     3px;
+}
+
+/* Year — JetBrains Mono, centered */
+.yearValue {
+  display:        block;
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-sm, 0.75rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  color:          var(--color-ink-secondary, #7A6E5F);
+}
+
+/* Result — mono, right-aligned, primary ink */
+.resultValue {
+  display:        block;
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-sm, 0.75rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  color:          var(--color-ink-primary, #2C2416);
+}
+
+/* The % or CGPA suffix — ghost ink, smaller */
+.resultType {
+  font-size:      0.6rem;
+  letter-spacing: 0.08em;
+  color:          var(--color-ink-ghost, #B5AA96);
+  margin-left:    2px;
+}
+
+/* ------------------------------------------------------------
+   FOOTNOTE
+   ------------------------------------------------------------ */
+.footnote {
+  margin-top:  var(--space-4, 16px);
+  padding-top: var(--space-3, 12px);
+}
+
+.footnoteText {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+/* ------------------------------------------------------------
+   RESPONSIVE — MOBILE
+   On narrow screens, simplify the table: hide Board column,
+   stack institution + location.
+   ------------------------------------------------------------ */
+@media (max-width: 640px) {
+  .th,
+  .td {
+    padding: var(--space-3, 12px) var(--space-3, 12px);
+  }
+
+  /* Hide Board column on mobile */
+  .th:nth-child(2),
+  .td:nth-child(2) {
+    display: none;
+  }
+
+  .institutionName {
+    font-size: var(--text-base, clamp(0.875rem, 0.8rem + 0.35vw, 1rem));
+  }
+
+  .heading {
+    font-size: var(--text-xl, clamp(1.75rem, 1.2rem + 2vw, 2.5rem));
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .rulerWrapper,
+  .row {
+    opacity:   1 !important;
+    transform: none !important;
+  }
+
+  .row {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   PRINT
+   ------------------------------------------------------------ */
+@media print {
+  .table {
+    font-size: 0.75rem;
+  }
+
+  .row:hover {
+    background: none;
+  }
+}

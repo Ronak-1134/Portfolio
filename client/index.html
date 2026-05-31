@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#F5F0E8" />
+
+  <!-- ======================================================
+         SEO & Social
+         ====================================================== -->
+  <title>Ronak Vaghela — Portfolio</title>
+  <meta name="description"
+    content="Ronak Vaghela — Full-Stack Developer. B.E Computer Engineering, LDCE Ahmedabad. Building things that scale and interfaces that feel inevitable." />
+  <meta name="author" content="Ronak Vaghela" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Ronak Vaghela — Portfolio" />
+  <meta property="og:description"
+    content="Full-Stack Developer. Building things that scale and interfaces that feel inevitable." />
+  <meta property="og:url" content="https://ronakvaghela.vercel.app" />
+  <meta property="og:image" content="/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ronak Vaghela — Portfolio" />
+  <meta name="twitter:description" content="Full-Stack Developer. Building things that scale." />
+  <meta name="twitter:image" content="/og-image.png" />
+
+  <!-- ======================================================
+         FAVICON
+         ====================================================== -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate icon" href="/favicon.ico" />
+
+  <!-- ======================================================
+         GOOGLE FONTS — PRECONNECT FIRST, THEN LOAD
+         Order matters: preconnect must precede the stylesheet.
+         display=swap prevents FOIT on slow connections.
+         ====================================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400&family=JetBrains+Mono:wght@400&display=swap" />
+
+  <!-- ======================================================
+         CRITICAL INLINE STYLE
+         Prevents flash of wrong background before CSS loads.
+         Matches --color-bg exactly.
+         ====================================================== -->
+  <style>
+    html,
+    body {
+      background-color: #F5F0E8;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Hide #root until React hydrates — prevents layout flash */
+    #root {
+      min-height: 100vh;
+    }
+  </style>
+
+  <!-- ======================================================
+         ACCESSIBILITY — Skip to main content
+         ====================================================== -->
+  <style>
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 0;
+      background: #2C2416;
+      color: #F5F0E8;
+      padding: 8px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      z-index: 99999;
+      transition: top 0.2s;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Skip to main content — keyboard accessibility -->
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <!-- React mounts here -->
+  <div id="root"></div>
+
+  <!-- Vite injects the module script -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

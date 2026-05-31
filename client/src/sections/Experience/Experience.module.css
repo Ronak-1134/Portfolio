@@ -1,0 +1,242 @@
+/* ============================================================
+   Experience.module.css — Full-Bleed Magazine Spread
+   ============================================================ */
+
+/* ---- SECTION ---- */
+.experience {
+  position:       relative;
+  padding-top:    var(--section-padding);
+  padding-bottom: var(--section-padding);
+  z-index:        var(--z-base, 1);
+}
+
+/* Section label sits inside max-width */
+.labelWrap {
+  width:         100%;
+  max-width:     var(--max-width, 1200px);
+  margin:        0 auto;
+  padding:       0 var(--content-padding);
+  margin-bottom: var(--space-10, 40px);
+}
+
+/* ---- ENTRIES CONTAINER ---- */
+.entries {
+  display:        flex;
+  flex-direction: column;
+  gap:            0;
+}
+
+/* ============================================================
+   ENTRY — full viewport width block
+   ============================================================ */
+.entry {
+  position: relative;
+  /* Full bleed */
+  width:    100vw;
+  left:     50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  padding:  var(--space-12, 48px) 0;
+}
+
+/* Alternate entries get a slightly deeper background */
+.entryAlt {
+  background: var(--color-surface, #EDE8DC);
+}
+
+/* Registration marks */
+.corner {
+  position: absolute;
+  display:  block;
+  width:    16px;
+  height:   16px;
+}
+
+.cornerTL {
+  top:         var(--space-4, 16px);
+  left:        var(--content-padding);
+  border-top:  0.5px solid var(--color-stroke, #C4B89A);
+  border-left: 0.5px solid var(--color-stroke, #C4B89A);
+}
+
+.cornerTR {
+  top:          var(--space-4, 16px);
+  right:        var(--content-padding);
+  border-top:   0.5px solid var(--color-stroke, #C4B89A);
+  border-right: 0.5px solid var(--color-stroke, #C4B89A);
+}
+
+/* ============================================================
+   GHOST COMPANY NAME — the centrepiece
+   Huge outline text behind the content.
+   ============================================================ */
+.bgName {
+  position:        absolute;
+  /* Vertically centred in the entry */
+  top:             50%;
+  transform:       translateY(-50%);
+  left:            0;
+  right:           0;
+  /* Text treatment */
+  font-family:     var(--font-display, 'Cormorant Garamond', serif);
+  font-size:       clamp(5rem, 18vw, 16rem);
+  font-weight:     300;
+  line-height:     1;
+  letter-spacing:  -0.04em;
+  white-space:     nowrap;
+  /* Outline only — no fill */
+  -webkit-text-stroke: 0.5px var(--color-stroke, #C4B89A);
+  color:           transparent;
+  /* Sit behind content */
+  z-index:         0;
+  pointer-events:  none;
+  user-select:     none;
+  /* Subtle left padding so first letter isn't flush with edge */
+  padding-left:    var(--content-padding);
+  /* Will be parallaxed by GSAP */
+  will-change:     transform;
+  opacity:         0.6;
+}
+
+/* Alternate entry — ghost name aligned right */
+.entryAlt .bgName {
+  text-align: right;
+  padding-left:  0;
+  padding-right: var(--content-padding);
+}
+
+/* ============================================================
+   CONTENT COLUMN — sits on top of ghost name
+   ============================================================ */
+.content {
+  position:  relative;
+  z-index:   1;
+  max-width: 560px;
+  /* Sits in the left third on default, right third on alternate */
+  margin:    0 auto 0 var(--content-padding);
+  display:   flex;
+  flex-direction: column;
+  gap:       var(--space-4, 16px);
+}
+
+/* Alternate — content column on the right */
+.entryAlt .content {
+  margin: 0 var(--content-padding) 0 auto;
+  max-width: 560px;
+}
+
+/* Period */
+.period {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  opacity:        0;  /* GSAP */
+}
+
+/* Role */
+.role {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary, #7A6E5F);
+  margin:         0;
+  opacity:        0;  /* GSAP */
+}
+
+/* Company name — medium Cormorant */
+.company {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      var(--text-xl, clamp(1.75rem, 2.5vw, 2.5rem));
+  font-weight:    300;
+  line-height:    1.1;
+  letter-spacing: -0.02em;
+  color:          var(--color-ink-primary, #2C2416);
+  margin:         0;
+  opacity:        0;  /* GSAP */
+}
+
+/* Rule */
+.rule {
+  width:      48px;
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+  opacity:    0;  /* GSAP */
+}
+
+/* Description */
+.description {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size:   var(--text-base, clamp(0.875rem, 0.8rem + 0.35vw, 1rem));
+  font-weight: 300;
+  line-height: 1.7;
+  color:       var(--color-ink-secondary, #7A6E5F);
+  margin:      0;
+  opacity:     0;  /* GSAP */
+}
+
+/* Tags */
+.tags {
+  display:   flex;
+  flex-wrap: wrap;
+  gap:       var(--space-2, 8px);
+  opacity:   0;  /* GSAP */
+}
+
+/* Divider between entries */
+.entryDivider {
+  position:   absolute;
+  bottom:     0;
+  left:       var(--content-padding);
+  right:      var(--content-padding);
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .bgName {
+    font-size: clamp(3.5rem, 14vw, 8rem);
+    opacity:   0.4;
+  }
+
+  .content,
+  .entryAlt .content {
+    margin:    0 var(--content-padding);
+    max-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .entry {
+    padding: var(--space-10, 40px) 0;
+  }
+
+  .bgName {
+    font-size: clamp(2.5rem, 12vw, 5rem);
+    opacity:   0.3;
+  }
+
+  .corner {
+    display: none;
+  }
+}
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+  .period, .role, .company, .rule, .description, .tags {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .bgName {
+    transform: translateY(-50%) !important;
+    will-change: auto;
+  }
+}

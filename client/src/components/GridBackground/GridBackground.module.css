@@ -1,0 +1,62 @@
+/* ============================================================
+   GridBackground.module.css
+   Ronak Vaghela Portfolio — Graph Paper Positioning
+
+   The grid is a fixed backdrop — it never scrolls, never
+   intercepts interaction, never covers content.
+   It simply exists beneath everything, always.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   WRAPPER
+   Fixed to viewport — does not scroll with content.
+   Full inset coverage. Pointer events off — completely inert.
+   ------------------------------------------------------------ */
+.gridWrapper {
+  position:       fixed;
+  inset:          0;
+  z-index:        var(--z-grid, 0);
+  pointer-events: none;
+  overflow:       hidden;
+
+  /* Grid sits behind everything including the page background.
+     The cream body background bleeds through the SVG lines. */
+  will-change:    transform;
+}
+
+/* ------------------------------------------------------------
+   SVG ELEMENT
+   Fills the wrapper completely.
+   opacity set here — the single place it's controlled.
+   0.35 is non-negotiable per the design spec.
+   ------------------------------------------------------------ */
+.gridSvg {
+  display:  block;
+  width:    100%;
+  height:   100%;
+  opacity:  var(--color-grid-opacity, 0.35);
+
+  /* Prevent the SVG from creating a new stacking context
+     that could interfere with z-index layering above it */
+  isolation: auto;
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — grid is static, no changes needed.
+   Listed here for completeness and future-proofing.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .gridWrapper {
+    /* Grid has no animation — nothing to suppress */
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------
+   PRINT — hide the grid entirely in print view
+   ------------------------------------------------------------ */
+@media print {
+  .gridWrapper {
+    display: none;
+  }
+}

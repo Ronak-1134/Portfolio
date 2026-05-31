@@ -1,0 +1,150 @@
+/* ============================================================
+   Marquee.module.css
+   Ronak Vaghela Portfolio — Ticker Strip Styles
+
+   Full viewport width. Breaks out of any container.
+   Two 0.5px rules sandwich the text row.
+   Ghost ink — present but never dominant.
+   ============================================================ */
+
+/* ---- WRAPPER ---- */
+.marqueeWrapper {
+  /* Full bleed — breaks out of parent max-width */
+  position:   relative;
+  width:      100vw;
+  left:       50%;
+  transform:  translateX(-50%);
+  overflow:   hidden;
+
+  /* Breathing room — not flush against sections */
+  margin:     0;
+}
+
+/* ---- RULES ---- */
+.rule {
+  width:      100%;
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+}
+
+/* ---- SCROLL TRACK ---- */
+.track {
+  overflow:   hidden;
+  width:      100%;
+  /* Fade edges so the scroll looks infinite */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+}
+
+/* ---- INNER — the moving strip ---- */
+.inner {
+  display:         flex;
+  align-items:     center;
+  width:           max-content;
+  padding:         var(--space-4, 16px) 0;
+
+  /* The scroll animation */
+  animation:       marquee-scroll linear infinite;
+  will-change:     transform;
+}
+
+/* Pause on hover — lets the user actually read it */
+.marqueeWrapper:hover .inner {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.333%); }
+}
+
+/* ---- ITEM ---- */
+.item {
+  display:     inline-flex;
+  align-items: center;
+  gap:         var(--space-5, 20px);
+  padding:     0 var(--space-5, 20px);
+  flex-shrink: 0;
+}
+
+.itemText {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  white-space:    nowrap;
+  transition:     color var(--duration-base, 240ms) ease;
+}
+
+/* Separator dot */
+.sep {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:   var(--text-xs, 0.65rem);
+  color:       var(--color-stroke, #C4B89A);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Highlight an item when hovered */
+.marqueeWrapper:hover .itemText {
+  color: var(--color-ink-secondary, #7A6E5F);
+}
+
+/* ---- SIZE VARIANTS ---- */
+
+/* Small (default) — thin strip */
+.size-sm .inner {
+  padding: var(--space-3, 12px) 0;
+}
+
+.size-sm .itemText {
+  font-size: var(--text-xs, 0.65rem);
+}
+
+/* Medium — taller strip with larger text */
+.size-md .inner {
+  padding: var(--space-5, 20px) 0;
+}
+
+.size-md .itemText {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size:   var(--text-lg, clamp(1.25rem, 1rem + 1vw, 1.75rem));
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color:       var(--color-ink-secondary, #7A6E5F);
+}
+
+.size-md .sep {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size:   var(--text-lg, clamp(1.25rem, 1rem + 1vw, 1.75rem));
+  color:       var(--color-stroke, #C4B89A);
+}
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+  .inner {
+    animation: none;
+  }
+}
+
+/* ---- PRINT ---- */
+@media print {
+  .marqueeWrapper {
+    display: none;
+  }
+}

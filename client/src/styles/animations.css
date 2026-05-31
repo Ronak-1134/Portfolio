@@ -1,0 +1,446 @@
+/* ============================================================
+   animations.css
+   Ronak Vaghela Portfolio — Keyframe Library
+   This file contains ONLY @keyframes declarations.
+   No selectors. No properties. No utilities.
+   Every animation here has a reason to exist.
+   ============================================================ */
+
+/* ============================================================
+   NAV & IDENTITY
+   ============================================================ */
+
+/* RV_ — the underscore blink in the nav brand mark */
+@keyframes blink {
+  0%,
+  49.9% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Availability indicator dot — slow sepia pulse */
+@keyframes pulse-dot {
+  0% {
+    opacity:    1;
+    transform:  scale(1);
+  }
+  50% {
+    opacity:    0.35;
+    transform:  scale(0.75);
+  }
+  100% {
+    opacity:    1;
+    transform:  scale(1);
+  }
+}
+
+/* Scroll progress bar fill — driven by JS, not keyframe,
+   but this handles the shimmer on the line itself */
+@keyframes progress-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position:  200% center;
+  }
+}
+
+/* Nav link underline — draws left to right on hover */
+@keyframes underline-draw {
+  0% {
+    transform:       scaleX(0);
+    transform-origin: left center;
+  }
+  100% {
+    transform:       scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+/* ============================================================
+   LOADER — OPENING CANVAS ANIMATION
+   These support the JS rAF animation with CSS transitions.
+   The heavy lifting is in Loader.jsx canvas logic.
+   ============================================================ */
+
+/* Loader fade out — the whole canvas dissolves into the page */
+@keyframes loader-exit {
+  0% {
+    opacity:   1;
+    transform: scale(1);
+  }
+  85% {
+    opacity:   1;
+    transform: scale(1.005);
+  }
+  100% {
+    opacity:   0;
+    transform: scale(1);
+  }
+}
+
+/* Loader content fade in — name appears after grid draws */
+@keyframes loader-name-in {
+  0% {
+    opacity:   0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+/* Skip hint — fades in after 600ms then pulses softly */
+@keyframes skip-hint-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes skip-hint-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+
+/* ============================================================
+   SCROLL REVEAL — GSAP handles the heavy reveals,
+   but these CSS keyframes are used for elements that
+   animate independently of scroll (form feedback, etc.)
+   ============================================================ */
+
+/* Standard fade-up — used for non-scroll JS reveals */
+@keyframes fade-up {
+  0% {
+    opacity:   0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in only — no movement */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Fade out */
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Blueprint unfold — cards lift from rotated position */
+@keyframes unfold {
+  0% {
+    opacity:   0;
+    transform: perspective(800px) rotateX(8deg) translateY(20px);
+  }
+  100% {
+    opacity:   1;
+    transform: perspective(800px) rotateX(0deg) translateY(0);
+  }
+}
+
+/* ============================================================
+   SVG LINE DRAWS
+   stroke-dashoffset animations for section dividers,
+   ruler ticks, card borders, annotation arrows.
+   These work in conjunction with inline SVG stroke values.
+   ============================================================ */
+
+/* Short line draws — section labels, annotation stems */
+@keyframes line-draw-short {
+  0% {
+    stroke-dashoffset: 48;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Medium line draws — card borders, dividers */
+@keyframes line-draw-medium {
+  0% {
+    stroke-dashoffset: 200;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Long line draws — full-width section dividers */
+@keyframes line-draw-long {
+  0% {
+    stroke-dashoffset: 1400;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Ruler tick draw — staggered ticks appear left to right */
+@keyframes ruler-tick-draw {
+  0% {
+    opacity:           0;
+    stroke-dashoffset: 16;
+  }
+  100% {
+    opacity:           1;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ============================================================
+   SKILL BARS
+   The measured sepia bars in the Skills section.
+   Width is set via CSS custom property --bar-width
+   which is written by the GSAP ScrollTrigger animation.
+   This keyframe handles the pure CSS fallback.
+   ============================================================ */
+
+@keyframes bar-fill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: var(--bar-target-width, 80%);
+  }
+}
+
+/* ============================================================
+   CARD & ELEMENT INTERACTIONS
+   These are CSS-only hover animations — no JS required.
+   ============================================================ */
+
+/* Corner registration mark extend on hover */
+@keyframes corner-extend {
+  0% {
+    width:  12px;
+    height: 12px;
+  }
+  100% {
+    width:  20px;
+    height: 20px;
+  }
+}
+
+/* Annotation arrow extend — the pointer grows outward */
+@keyframes arrow-extend {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(1.4);
+  }
+}
+
+/* Card lift — translateY only, no shadow (design rule) */
+@keyframes card-lift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-3px);
+  }
+}
+
+/* ============================================================
+   CONTACT FORM FEEDBACK
+   Success and error states for the form submission.
+   ============================================================ */
+
+/* Success message slides in from bottom */
+@keyframes form-success-in {
+  0% {
+    opacity:   0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+/* Error shake — subtle horizontal oscillation */
+@keyframes form-error-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+/* Field focus ring draw — border animates in on focus */
+@keyframes field-focus-draw {
+  0% {
+    border-color: var(--color-stroke);
+  }
+  100% {
+    border-color: var(--color-ink-secondary);
+  }
+}
+
+/* ============================================================
+   CURSOR
+   The custom crosshair cursor ring animations.
+   ============================================================ */
+
+/* Cursor outer ring appear on mount */
+@keyframes cursor-appear {
+  0% {
+    opacity:   0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  100% {
+    opacity:   1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Cursor hover expand — for link/project hover states */
+@keyframes cursor-expand {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+  }
+}
+
+/* Cursor click compress */
+@keyframes cursor-click {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.75);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ============================================================
+   HERO SECTION
+   Entrance animations for the hero that aren't GSAP-driven.
+   ============================================================ */
+
+/* Hero rule draw — the 0.5px sepia line beneath the name */
+@keyframes hero-rule-draw {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Blueprint annotation appear */
+@keyframes annotation-in {
+  0% {
+    opacity:   0;
+    transform: translateX(-6px);
+  }
+  100% {
+    opacity:   1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================================
+   SCROLL INDICATOR
+   A subtle downward nudge to hint at scrollable content.
+   Used in the hero section only.
+   ============================================================ */
+
+@keyframes scroll-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity:   0.5;
+  }
+  50% {
+    transform: translateY(5px);
+    opacity:   1;
+  }
+}
+
+/* ============================================================
+   PHOTO / IMAGE
+   The hero photo subtle entrance.
+   ============================================================ */
+
+/* Photo reveal — clips in from the top edge */
+@keyframes photo-reveal {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0% 0);
+  }
+}
+
+/* ============================================================
+   RESUME BUTTON
+   Download tracking feedback animation.
+   ============================================================ */
+
+@keyframes download-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ============================================================
+   UTILITY ANIMATION HELPERS
+   Applied via class to trigger named keyframes.
+   Duration and easing defined at point of use.
+   ============================================================ */
+
+/* .animate-blink        → blink          2s step-end infinite   */
+/* .animate-pulse-dot    → pulse-dot      2.4s ease-in-out inf   */
+/* .animate-fade-up      → fade-up        0.9s power3.out once   */
+/* .animate-unfold       → unfold         0.9s power3.out once   */
+/* .animate-loader-exit  → loader-exit    0.6s ease-in-out fwd   */
+/* .animate-scroll-nudge → scroll-nudge   2s ease-in-out 3×      */

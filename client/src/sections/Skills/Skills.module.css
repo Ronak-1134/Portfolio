@@ -1,0 +1,343 @@
+/* ============================================================
+   Skills.module.css — Periodic Table Grid
+   ============================================================ */
+
+/* ---- SECTION ---- */
+.skills {
+  position:       relative;
+  padding-top:    var(--section-padding);
+  padding-bottom: var(--section-padding);
+  z-index:        var(--z-base, 1);
+}
+
+.inner {
+  width:     100%;
+  max-width: var(--max-width, 1200px);
+  margin:    0 auto;
+  padding:   0 var(--content-padding);
+}
+
+/* ---- LEGEND ---- */
+.legend {
+  display:       flex;
+  align-items:   center;
+  gap:           var(--space-8, 32px);
+  margin-bottom: var(--space-10, 40px);
+  padding:       var(--space-4, 16px);
+  border:        0.5px solid var(--color-stroke, #C4B89A);
+  background:    var(--color-surface, #EDE8DC);
+  width:         fit-content;
+}
+
+.legendItem {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-2, 8px);
+}
+
+.legendAtomic {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.55rem;
+  color:          var(--color-ink-ghost, #B5AA96);
+  letter-spacing: 0.1em;
+}
+
+.legendSymbol {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size:   var(--text-md, 1rem);
+  font-weight: 300;
+  color:       var(--color-ink-secondary, #7A6E5F);
+}
+
+.legendBar {
+  display:    block;
+  width:      32px;
+  height:     2px;
+  background: linear-gradient(
+    to right,
+    var(--color-ink-secondary, #7A6E5F) 70%,
+    var(--color-stroke, #C4B89A) 70%
+  );
+}
+
+.legendText {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+/* ---- TABLE ---- */
+.table {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-3, 12px);
+}
+
+/* ---- ROW ---- */
+.row {
+  display:     grid;
+  grid-template-columns: 80px 1fr;
+  gap:         var(--space-4, 16px);
+  align-items: center;
+}
+
+/* Category label column */
+.rowLabel {
+  display:        flex;
+  flex-direction: column;
+  align-items:    flex-end;
+  gap:            var(--space-1, 4px);
+  padding-right:  var(--space-3, 12px);
+  border-right:   0.5px solid var(--color-stroke, #C4B89A);
+  height:         100%;
+  justify-content: center;
+}
+
+.rowCode {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+.rowName {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  opacity:        0.6;
+  text-align:     right;
+}
+
+/* ---- CELLS ROW ---- */
+.cells {
+  display: flex;
+  gap:     var(--space-2, 8px);
+  flex-wrap: nowrap;
+}
+
+/* ============================================================
+   SKILL CELL
+   ============================================================ */
+.cell {
+  position:        relative;
+  width:           88px;
+  height:          96px;
+  flex-shrink:     0;
+  background:      var(--color-surface, #EDE8DC);
+  border:          0.5px solid var(--color-stroke, #C4B89A);
+  padding:         var(--space-2, 8px);
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  cursor:          none;
+  overflow:        hidden;
+
+  /* GSAP initial state */
+  opacity: 0;
+
+  transition:
+    background    var(--duration-base, 240ms) var(--ease-hover),
+    border-color  var(--duration-base, 240ms) var(--ease-hover),
+    transform     var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1));
+}
+
+.cell:hover {
+  background:  var(--color-bg, #F5F0E8);
+  border-color: var(--color-ink-ghost, #B5AA96);
+  transform:   translateY(-3px);
+}
+
+/* Atomic number — top left */
+.atomic {
+  position:       absolute;
+  top:            var(--space-1, 4px);
+  left:           var(--space-2, 6px);
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.5rem;
+  font-weight:    400;
+  color:          var(--color-ink-ghost, #B5AA96);
+  line-height:    1;
+  letter-spacing: 0;
+}
+
+/* Proficiency number — top right, visible on hover */
+.profLevel {
+  position:   absolute;
+  top:        var(--space-1, 4px);
+  right:      var(--space-2, 6px);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:  0.5rem;
+  font-weight: 400;
+  color:      var(--color-ink-secondary, #7A6E5F);
+  line-height: 1;
+  opacity:    0;
+  transition: opacity var(--duration-fast, 160ms) ease;
+}
+
+.profLevelVisible {
+  opacity: 1;
+}
+
+/* Symbol — centrepiece */
+.symbol {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight:    300;
+  line-height:    1;
+  color:          var(--color-ink-primary, #2C2416);
+  letter-spacing: -0.02em;
+  margin-bottom:  var(--space-1, 4px);
+  transition:     font-size var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1));
+}
+
+.cell:hover .symbol {
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+}
+
+/* Full name */
+.name {
+  font-family:    var(--font-body, 'DM Sans', sans-serif);
+  font-size:      0.52rem;
+  font-weight:    300;
+  line-height:    1.2;
+  color:          var(--color-ink-secondary, #7A6E5F);
+  text-align:     center;
+  letter-spacing: 0.01em;
+  /* Clip long names */
+  max-width:      100%;
+  overflow:       hidden;
+  white-space:    nowrap;
+  text-overflow:  ellipsis;
+}
+
+/* Proficiency label — appears below name */
+.profLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.42rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  opacity:        0;
+  margin-top:     2px;
+  transition:     opacity var(--duration-base, 240ms) ease;
+}
+
+.cell:hover .profLabel {
+  opacity: 0.8;
+}
+
+/* Proficiency bar — bottom edge */
+.profBar {
+  position:   absolute;
+  bottom:     0;
+  left:       0;
+  right:      0;
+  height:     2px;
+  background: var(--color-stroke, #C4B89A);
+}
+
+.profBarFill {
+  height:      100%;
+  width:       var(--prof-width, 0%);
+  background:  var(--color-ink-secondary, #7A6E5F);
+  transition:  width 1.2s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) var(--cell-delay, 0s);
+}
+
+/* Animate bar when section is in view — triggered by parent class */
+.row .profBarFill {
+  width: 0%;
+}
+
+/* CSS trick: once the cell is visible (opacity > 0 via GSAP),
+   transition the bar to its target width */
+.cell[style] .profBarFill {
+  width: var(--prof-width, 0%);
+}
+
+/* ---- FOOTNOTE ---- */
+.footnote {
+  margin-top:  var(--space-8, 32px);
+  padding-top: var(--space-4, 16px);
+  border-top:  0.5px solid var(--color-stroke, #C4B89A);
+}
+
+.footnoteText {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .cells {
+    flex-wrap: wrap;
+  }
+
+  .cell {
+    width:  80px;
+    height: 88px;
+  }
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .rowLabel {
+    flex-direction: row;
+    align-items:    center;
+    border-right:   none;
+    border-bottom:  0.5px solid var(--color-stroke, #C4B89A);
+    padding-right:  0;
+    padding-bottom: var(--space-2, 8px);
+    height:         auto;
+    justify-content: flex-start;
+  }
+
+  .rowName { text-align: left; }
+
+  .cell {
+    width:  72px;
+    height: 80px;
+  }
+
+  .legend {
+    display: none;
+  }
+}
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+  .cell {
+    opacity:    1;
+    transform:  none;
+    transition: none;
+  }
+
+  .profBarFill {
+    width:      var(--prof-width, 0%);
+    transition: none;
+  }
+
+  .symbol,
+  .profLevel,
+  .profLabel {
+    transition: none;
+  }
+}

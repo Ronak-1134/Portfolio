@@ -1,0 +1,61 @@
+/* ============================================================
+   Tag.module.css
+   Ronak Vaghela Portfolio — Tag Styles
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   BASE TAG
+   ------------------------------------------------------------ */
+.tag {
+  display:        inline-block;
+  padding:        var(--space-1, 4px) var(--space-3, 12px);
+  border:         var(--border-solid, 0.5px solid var(--color-stroke));
+  border-radius:  0;   /* Drafting table. No radius. */
+
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary, #7A6E5F);
+  line-height:    1.4;
+  white-space:    nowrap;
+
+  background:     transparent;
+
+  /* Hover transition */
+  transition:
+    background-color var(--duration-fast, 160ms) var(--ease-hover),
+    color            var(--duration-fast, 160ms) var(--ease-hover),
+    border-color     var(--duration-fast, 160ms) var(--ease-hover);
+}
+
+.tag:hover {
+  background-color: var(--color-accent-faint, rgba(139, 94, 60, 0.07));
+  border-color:     var(--color-stroke-dark, #8B5E3C);
+  color:            var(--color-ink-primary, #2C2416);
+}
+
+/* ------------------------------------------------------------
+   XS VARIANT — smaller padding, for dense tag lists
+   ------------------------------------------------------------ */
+.tagXs {
+  padding:       2px var(--space-2, 8px);
+  font-size:     0.6rem;
+  letter-spacing: 0.1em;
+}
+
+/* ------------------------------------------------------------
+   MUTED VARIANT — ghost ink, lower visual hierarchy
+   Used for less prominent tech tags in card footers
+   ------------------------------------------------------------ */
+.tagMuted {
+  color:        var(--color-ink-ghost, #B5AA96);
+  border-color: var(--color-grid, #D4C9B0);
+}
+
+.tagMuted:hover {
+  color:        var(--color-ink-secondary, #7A6E5F);
+  border-color: var(--color-stroke, #C4B89A);
+  background:   transparent;
+}

@@ -1,0 +1,178 @@
+/* ============================================================
+   Button.module.css
+   Ronak Vaghela Portfolio — Button Styles
+
+   Three variants. All share the same base.
+   The text variant is the most used — lightweight, directional.
+   Primary is used once (Resume download).
+   Ghost is used for secondary CTAs (GitHub, contact links).
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   BASE — shared by all variants
+   ------------------------------------------------------------ */
+.btn {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            var(--space-3, 12px);
+  padding:        var(--space-3, 12px) var(--space-6, 24px);
+  border-radius:  0;   /* No radius. Ever. */
+  text-decoration: none;
+  cursor:         none;   /* Custom cursor active */
+  line-height:    1;
+  position:       relative;
+  overflow:       hidden;
+
+  /* Prevent text selection on rapid clicks */
+  user-select:    none;
+  -webkit-user-select: none;
+}
+
+.btn:focus-visible {
+  outline:        var(--border-solid-dark, 0.5px solid var(--color-stroke-dark));
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------
+   LABEL — the button text
+   DM Sans, light weight, tracked slightly
+   ------------------------------------------------------------ */
+.label {
+  font-family:    var(--font-body, 'DM Sans', sans-serif);
+  font-size:      var(--text-sm, 0.75rem);
+  font-weight:    300;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  line-height:    1;
+  transition:     transform var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* ------------------------------------------------------------
+   ARROW GLYPH — "→"
+   Shifts with the label on text variant hover.
+   ------------------------------------------------------------ */
+.arrow {
+  font-family:    var(--font-body, 'DM Sans', sans-serif);
+  font-size:      var(--text-sm, 0.75rem);
+  font-weight:    300;
+  line-height:    1;
+  display:        inline-block;
+  transition:     transform var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* ============================================================
+   VARIANT: PRIMARY
+   Surface fill, solid border. The most present button.
+   Used for: Resume download (once).
+   ============================================================ */
+.primary {
+  background:  var(--color-surface, #EDE8DC);
+  border:      var(--border-solid, 0.5px solid var(--color-stroke));
+  color:       var(--color-ink-primary, #2C2416);
+  transition:
+    background-color var(--duration-base, 240ms) var(--ease-hover),
+    border-color     var(--duration-base, 240ms) var(--ease-hover);
+}
+
+.primary:hover {
+  background-color: var(--color-surface-hover, #E5DFD0);
+  border-color:     var(--color-ink-ghost, #B5AA96);
+}
+
+.primary .label,
+.primary .arrow {
+  color: var(--color-ink-primary, #2C2416);
+}
+
+.primary:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* ============================================================
+   VARIANT: GHOST
+   Transparent fill, 0.5px border. Recessive but present.
+   Used for: secondary CTAs, link buttons.
+   ============================================================ */
+.ghost {
+  background:  transparent;
+  border:      var(--border-solid, 0.5px solid var(--color-stroke));
+  color:       var(--color-ink-secondary, #7A6E5F);
+  transition:
+    background-color var(--duration-base, 240ms) var(--ease-hover),
+    border-color     var(--duration-base, 240ms) var(--ease-hover),
+    color            var(--duration-base, 240ms) var(--ease-hover);
+}
+
+.ghost:hover {
+  background-color: var(--color-accent-faint, rgba(139, 94, 60, 0.07));
+  border-color:     var(--color-ink-ghost, #B5AA96);
+  color:            var(--color-ink-primary, #2C2416);
+}
+
+.ghost .label,
+.ghost .arrow {
+  color: inherit;
+}
+
+.ghost:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* ============================================================
+   VARIANT: TEXT
+   No border, no fill. Just label + arrow.
+   The most lightweight — used for "See More", nav-style links.
+   ============================================================ */
+.text {
+  background:  transparent;
+  border:      none;
+  color:       var(--color-ink-secondary, #7A6E5F);
+  padding:     var(--space-1, 4px) 0;   /* Minimal padding */
+  gap:         var(--space-2, 8px);
+  transition:  color var(--duration-base, 240ms) var(--ease-hover);
+}
+
+.text:hover {
+  color: var(--color-ink-primary, #2C2416);
+}
+
+.text .label,
+.text .arrow {
+  color: inherit;
+}
+
+/* On hover: label shifts right 2px, arrow shifts right 4px */
+.text:hover .label {
+  transform: translateX(2px);
+}
+
+.text:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ------------------------------------------------------------
+   DISABLED STATE — all variants
+   ------------------------------------------------------------ */
+.disabled {
+  opacity:       0.4;
+  pointer-events: none;
+  cursor:        default;
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — remove transitions
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .label,
+  .arrow {
+    transition: none;
+  }
+
+  .text:hover .label,
+  .text:hover .arrow,
+  .primary:hover .arrow,
+  .ghost:hover .arrow {
+    transform: none;
+  }
+}

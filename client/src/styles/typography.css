@@ -1,0 +1,498 @@
+/* ============================================================
+   typography.css
+   Ronak Vaghela Portfolio — Typography System
+   Three typefaces. Three roles. Zero ambiguity.
+
+   Cormorant Garamond 300  →  Display: name, headings, numbers
+   DM Sans 300/400          →  Body: all prose, nav, descriptions
+   JetBrains Mono 400       →  Labels: section numbers, tags,
+                                annotations, blueprint callouts
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   FLUID TYPE SCALE
+   clamp(min, preferred, max)
+   preferred = viewport-relative growth between breakpoints.
+   Nothing is hard-coded to a single breakpoint.
+   ------------------------------------------------------------ */
+:root {
+  --text-xs:   clamp(0.65rem,  0.5rem  + 0.3vw,  0.75rem);   /*  10–12px  */
+  --text-sm:   clamp(0.75rem,  0.65rem + 0.4vw,  0.875rem);  /*  12–14px  */
+  --text-base: clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);      /*  14–16px  */
+  --text-md:   clamp(1rem,     0.9rem  + 0.45vw, 1.125rem);  /*  16–18px  */
+  --text-lg:   clamp(1.25rem,  1rem    + 1vw,    1.75rem);   /*  20–28px  */
+  --text-xl:   clamp(1.75rem,  1.2rem  + 2vw,    2.5rem);    /*  28–40px  */
+  --text-2xl:  clamp(2.5rem,   1.5rem  + 4vw,    4.5rem);    /*  40–72px  */
+  --text-3xl:  clamp(4rem,     2rem    + 8vw,    8rem);      /*  64–128px */
+}
+
+/* ------------------------------------------------------------
+   LINE HEIGHTS
+   Two values only. Discipline is the system.
+   ------------------------------------------------------------ */
+:root {
+  --leading-display: 1.1;   /* All Cormorant display text */
+  --leading-body:    1.6;   /* All DM Sans body text      */
+  --leading-mono:    1.4;   /* JetBrains Mono labels      */
+}
+
+/* ------------------------------------------------------------
+   LETTER SPACING
+   Mono labels use tracked all-caps. Display uses tighter fit.
+   ------------------------------------------------------------ */
+:root {
+  --tracking-tight:  -0.02em;   /* Large Cormorant display  */
+  --tracking-normal:  0em;      /* Body text default        */
+  --tracking-mono:    0.12em;   /* JetBrains Mono all-caps  */
+  --tracking-wide:    0.15em;   /* Section numbers, callouts */
+  --tracking-widest:  0.2em;    /* Nav links                */
+}
+
+/* ------------------------------------------------------------
+   FONT FAMILY ALIASES
+   Reference by role, not by name — easier to swap if needed.
+   ------------------------------------------------------------ */
+:root {
+  --font-display: 'Cormorant Garamond', 'Georgia', serif;
+  --font-body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* ============================================================
+   BASE TYPOGRAPHIC ELEMENTS
+   Set once here, inherited everywhere.
+   ============================================================ */
+
+/* Body inherits from globals.css — just the type-specific layer */
+body {
+  font-family:  var(--font-body);
+  font-size:    var(--text-base);
+  line-height:  var(--leading-body);
+  font-weight:  300;
+  color:        var(--color-ink-primary);
+}
+
+/* ============================================================
+   DISPLAY — CORMORANT GARAMOND
+   The architectural soul of the page. Weight 300 only.
+   These headings are drawn, not stamped.
+   ============================================================ */
+
+h1,
+.display-1 {
+  font-family:    var(--font-display);
+  font-size:      var(--text-3xl);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: var(--tracking-tight);
+  color:          var(--color-ink-primary);
+}
+
+h2,
+.display-2 {
+  font-family:    var(--font-display);
+  font-size:      var(--text-2xl);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: var(--tracking-tight);
+  color:          var(--color-ink-primary);
+}
+
+h3,
+.display-3 {
+  font-family:    var(--font-display);
+  font-size:      var(--text-xl);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: -0.01em;
+  color:          var(--color-ink-primary);
+}
+
+h4,
+.display-4 {
+  font-family:    var(--font-display);
+  font-size:      var(--text-lg);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  color:          var(--color-ink-primary);
+}
+
+/* Italic variant — used for role titles, company names in context */
+.display-italic {
+  font-family: var(--font-display);
+  font-style:  italic;
+  font-weight: 300;
+}
+
+/* Large section heading — used in Contact "Draw up a brief." */
+.heading-large {
+  font-family:    var(--font-display);
+  font-size:      var(--text-2xl);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: var(--tracking-tight);
+  color:          var(--color-ink-primary);
+}
+
+/* ============================================================
+   BODY — DM SANS
+   The technical clarity beneath the elegance.
+   Weights 300 (default) and 400 (emphasis) only.
+   ============================================================ */
+
+p,
+.body-text {
+  font-family: var(--font-body);
+  font-size:   var(--text-base);
+  font-weight: 300;
+  line-height: var(--leading-body);
+  color:       var(--color-ink-primary);
+}
+
+.body-secondary {
+  font-family: var(--font-body);
+  font-size:   var(--text-base);
+  font-weight: 300;
+  line-height: var(--leading-body);
+  color:       var(--color-ink-secondary);
+}
+
+.body-ghost {
+  font-family: var(--font-body);
+  font-size:   var(--text-sm);
+  font-weight: 300;
+  line-height: var(--leading-body);
+  color:       var(--color-ink-ghost);
+}
+
+/* Medium variant — used sparingly for emphasis without weight */
+.body-medium {
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+/* Large body — lead paragraphs, hero sub-lines */
+.body-large {
+  font-family: var(--font-body);
+  font-size:   var(--text-md);
+  font-weight: 300;
+  line-height: var(--leading-body);
+  color:       var(--color-ink-secondary);
+}
+
+/* Small body — descriptions beneath project titles */
+.body-small {
+  font-family: var(--font-body);
+  font-size:   var(--text-sm);
+  font-weight: 300;
+  line-height: var(--leading-body);
+  color:       var(--color-ink-secondary);
+}
+
+/* ============================================================
+   MONO — JETBRAINS MONO
+   The blueprint annotation layer. Technical. Precise.
+   All-caps + tracked. This is the notation system.
+   ============================================================ */
+
+code,
+kbd,
+samp,
+pre,
+.mono {
+  font-family: var(--font-mono);
+  font-size:   var(--text-sm);
+  font-weight: 400;
+  line-height: var(--leading-mono);
+}
+
+/* Label — section numbers, tech tags, annotation callouts */
+.label {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  line-height:    var(--leading-mono);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost);
+}
+
+/* Label with secondary ink — slightly more visible */
+.label-secondary {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  line-height:    var(--leading-mono);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary);
+}
+
+/* Section number — "01 —", "02 —" blueprint notation */
+.section-number {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost);
+}
+
+/* Navigation links */
+.nav-link {
+  font-family:    var(--font-body);
+  font-size:      var(--text-sm);
+  font-weight:    300;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary);
+  transition:     color var(--duration-base) var(--ease-hover);
+}
+
+.nav-link:hover {
+  color: var(--color-ink-primary);
+}
+
+/* Annotation text — small callout labels on blueprint diagrams */
+.annotation {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost);
+  white-space:    nowrap;
+}
+
+/* Dimension callout — measurement notation on skill bars, rulers */
+.dimension {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary);
+}
+
+/* ============================================================
+   SPECIAL TYPOGRAPHIC COMPOSITIONS
+   One-off type treatments that appear in specific sections.
+   ============================================================ */
+
+/* Hero name — the centrepiece. Cormorant at its largest. */
+.hero-name {
+  font-family:    var(--font-display);
+  font-size:      var(--text-3xl);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: var(--tracking-tight);
+  color:          var(--color-ink-primary);
+  display:        block;
+  width:          100%;
+}
+
+/* Hero role — JetBrains Mono, tracked, beneath the name */
+.hero-role {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-sm);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary);
+}
+
+/* Company name in experience cards */
+.company-name {
+  font-family:    var(--font-display);
+  font-size:      var(--text-xl);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: var(--tracking-tight);
+  color:          var(--color-ink-primary);
+}
+
+/* Job title — mono, tracked, beneath company name */
+.job-title {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color:          var(--color-ink-secondary);
+}
+
+/* Date range — right-aligned in experience cards */
+.date-range {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono);
+  color:          var(--color-ink-ghost);
+}
+
+/* Project number — circled, large mono */
+.project-number {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: 0;
+  color:          var(--color-ink-ghost);
+}
+
+/* Project title — Cormorant, mid-size */
+.project-title {
+  font-family:    var(--font-display);
+  font-size:      var(--text-lg);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: var(--tracking-tight);
+  color:          var(--color-ink-primary);
+}
+
+/* Education table — institution name in Cormorant */
+.institution-name {
+  font-family: var(--font-display);
+  font-size:   var(--text-md);
+  font-weight: 300;
+  line-height: var(--leading-display);
+  font-style:  italic;
+  color:       var(--color-ink-primary);
+}
+
+/* Education table — scores and years in JetBrains Mono */
+.edu-number {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-sm);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono);
+  color:          var(--color-ink-secondary);
+}
+
+/* Skill category label */
+.skill-category {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost);
+}
+
+/* Skill name */
+.skill-name {
+  font-family: var(--font-body);
+  font-size:   var(--text-sm);
+  font-weight: 300;
+  color:       var(--color-ink-primary);
+}
+
+/* Contact heading — "Draw up a brief." */
+.contact-heading {
+  font-family:    var(--font-display);
+  font-size:      var(--text-2xl);
+  font-weight:    300;
+  line-height:    var(--leading-display);
+  letter-spacing: var(--tracking-tight);
+  color:          var(--color-ink-primary);
+}
+
+/* Contact sub-line */
+.contact-subline {
+  font-family: var(--font-body);
+  font-size:   var(--text-md);
+  font-weight: 300;
+  line-height: var(--leading-body);
+  color:       var(--color-ink-secondary);
+}
+
+/* Footer text */
+.footer-text {
+  font-family:    var(--font-mono);
+  font-size:      var(--text-xs);
+  font-weight:    400;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost);
+}
+
+/* ============================================================
+   TYPOGRAPHIC UTILITIES
+   Applied as classes when semantic elements don't fit.
+   ============================================================ */
+
+.text-primary   { color: var(--color-ink-primary);   }
+.text-secondary { color: var(--color-ink-secondary); }
+.text-ghost     { color: var(--color-ink-ghost);     }
+.text-accent    { color: var(--color-accent);        }
+
+.text-display   { font-family: var(--font-display); font-weight: 300; }
+.text-body      { font-family: var(--font-body);    font-weight: 300; }
+.text-mono      { font-family: var(--font-mono);    font-weight: 400; }
+
+.text-italic    { font-style: italic; }
+.text-caps      { text-transform: uppercase; letter-spacing: var(--tracking-mono); }
+
+.text-tight     { line-height: var(--leading-display); }
+.text-loose     { line-height: var(--leading-body);    }
+
+/* Text sizes as utilities */
+.text-xs   { font-size: var(--text-xs);   }
+.text-sm   { font-size: var(--text-sm);   }
+.text-base { font-size: var(--text-base); }
+.text-md   { font-size: var(--text-md);   }
+.text-lg   { font-size: var(--text-lg);   }
+.text-xl   { font-size: var(--text-xl);   }
+.text-2xl  { font-size: var(--text-2xl);  }
+.text-3xl  { font-size: var(--text-3xl);  }
+
+/* ============================================================
+   RESPONSIVE OVERRIDES
+   The fluid scale handles most cases via clamp().
+   These are micro-corrections for extreme viewports only.
+   ============================================================ */
+
+/* Very small screens — ensure readability */
+@media (max-width: 360px) {
+  body {
+    font-size: 0.875rem;
+  }
+}
+
+/* Large screens — cap the hero name growth */
+@media (min-width: 1400px) {
+  .hero-name {
+    font-size: clamp(6rem, 8vw, 9rem);
+  }
+}
+
+/* ============================================================
+   APP-LEVEL SECTION DIVIDERS
+   Full-width ruled lines between sections with ghost index number.
+   ============================================================ */
+.app-divider {
+  position:   relative;
+  width:      100%;
+  max-width:  var(--max-width, 1200px);
+  margin:     0 auto;
+  padding:    0 var(--content-padding);
+}
+
+.app-divider__rule {
+  width:      100%;
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+}
+
+.app-divider__index {
+  position:       absolute;
+  right:          var(--content-padding);
+  top:            50%;
+  transform:      translateY(-50%);
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  font-weight:    400;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  color:          var(--color-ink-ghost, #B5AA96);
+  background:     var(--color-bg, #F5F0E8);
+  padding:        0 var(--space-2, 8px);
+}

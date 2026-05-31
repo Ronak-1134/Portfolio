@@ -1,0 +1,184 @@
+/* ============================================================
+   Cursor.module.css
+   Ronak Vaghela Portfolio — Custom Cursor Styles
+
+   Position is applied via JS inline styles (translate).
+   This file handles: shape, color, crosshair marks,
+   blend mode, variant transitions, and click state.
+
+   The cursor feels like a draftsman's crosshair loupe —
+   precise, minimal, present without being decorative.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   SHARED BASE
+   Both elements are positioned fixed at top-left (0,0).
+   JS translates them to the correct position via transform.
+   This avoids layout recalculation on every mouse move.
+   ------------------------------------------------------------ */
+.outer,
+.inner {
+  position:       fixed;
+  top:            0;
+  left:           0;
+  pointer-events: none;
+  z-index:        var(--z-cursor, 9999);
+  will-change:    transform, width, height, opacity;
+  border-radius:  0;   /* No radius. Ever. */
+}
+
+/* ------------------------------------------------------------
+   OUTER RING
+   Square border, crosshair marks via ::before and ::after.
+   mix-blend-mode: multiply — darkens content it passes over.
+   Size and position are set via JS inline style.
+   ------------------------------------------------------------ */
+.outer {
+  border:      0.5px solid var(--color-ink-primary, #2C2416);
+  mix-blend-mode: multiply;
+
+  /* Smooth transitions for size changes (variant switches).
+     Position uses rAF lerp — no transition there. */
+  transition:
+    width      var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    height     var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    opacity    var(--duration-fast, 160ms) linear,
+    border-color var(--duration-base, 240ms) ease;
+}
+
+/* Crosshair line — horizontal */
+.outer::before {
+  content:    '';
+  position:   absolute;
+  top:        50%;
+  left:       -6px;
+  right:      -6px;
+  height:     0.5px;
+  background: var(--color-ink-primary, #2C2416);
+  transform:  translateY(-50%);
+  opacity:    0.6;
+}
+
+/* Crosshair line — vertical */
+.outer::after {
+  content:    '';
+  position:   absolute;
+  left:       50%;
+  top:        -6px;
+  bottom:     -6px;
+  width:      0.5px;
+  background: var(--color-ink-primary, #2C2416);
+  transform:  translateX(-50%);
+  opacity:    0.6;
+}
+
+/* ------------------------------------------------------------
+   OUTER — DASHED VARIANT (project hover)
+   ------------------------------------------------------------ */
+.outerDashed {
+  border-style:  dashed;
+  border-color:  var(--color-ink-secondary, #7A6E5F);
+}
+
+.outerDashed::before,
+.outerDashed::after {
+  opacity: 0.4;
+}
+
+/* ------------------------------------------------------------
+   OUTER — TEXT VARIANT
+   Compressed to a thin horizontal rect — I-beam feel.
+   ------------------------------------------------------------ */
+.outerText {
+  border-radius: 0;
+}
+
+/* ------------------------------------------------------------
+   INNER DOT
+   Solid square, snaps directly to mouse position.
+   No border, no blend mode — it needs to be precise.
+   ------------------------------------------------------------ */
+.inner {
+  background:  var(--color-ink-primary, #2C2416);
+  mix-blend-mode: normal;
+
+  transition:
+    width   var(--duration-fast, 160ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    height  var(--duration-fast, 160ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    opacity var(--duration-fast, 160ms) linear;
+}
+
+/* ------------------------------------------------------------
+   CLICK STATE
+   Inner dot compresses on mousedown — tactile feedback.
+   Applied via JS classList.
+   ------------------------------------------------------------ */
+.clicking {
+  width:   1px !important;
+  height:  1px !important;
+  opacity: 1   !important;
+}
+
+/* ------------------------------------------------------------
+   HIDDEN STATE
+   When cursor leaves the window — fade both elements.
+   ------------------------------------------------------------ */
+.hidden {
+  opacity: 0 !important;
+  transition:
+    opacity var(--duration-fast, 160ms) linear,
+    width   var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    height  var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* ------------------------------------------------------------
+   APPEAR ON MOUNT
+   The cursor fades in the first time the mouse enters.
+   Applied once via CSS animation — not repeated.
+   ------------------------------------------------------------ */
+.outer:not(.hidden) {
+  animation: cursor-appear 0.3s var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)) both;
+}
+
+@keyframes cursor-appear {
+  from {
+    opacity:   0;
+    transform: var(--cursor-transform, translate(0, 0)) scale(0.4);
+  }
+  to {
+    opacity:   inherit;
+    transform: var(--cursor-transform, translate(0, 0)) scale(1);
+  }
+}
+
+/* ------------------------------------------------------------
+   MOBILE / TOUCH — hide entirely
+   Coarse pointer = touch device = native cursor hidden by CSS
+   on body. No custom cursor element needed.
+   ------------------------------------------------------------ */
+@media (pointer: coarse) {
+  .outer,
+  .inner {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — hide custom cursor, restore native
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .outer,
+  .inner {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------
+   PRINT — never print the cursor
+   ------------------------------------------------------------ */
+@media print {
+  .outer,
+  .inner {
+    display: none;
+  }
+}
