@@ -77,8 +77,8 @@ export const projects = [
       'REST API',
     ],
     links: {
-      github: 'https://github.com/your-username/orbitops',
-      live:   null,
+      github: 'https://github.com/Ronak-1134/OrbitOps',
+      live:   'https://orbitops-kr18.onrender.com/',
     },
     highlight: 'React Three Fiber + GSAP + Live Telemetry',
   },
@@ -104,8 +104,8 @@ export const projects = [
       'Firebase Auth',
     ],
     links: {
-      github: 'https://github.com/yourusername/questlog',
-      live:   null,
+      github: 'https://github.com/Ronak-1134/QuestLog',
+      live:   'https://quest-log-eta.vercel.app/',
     },
     highlight: 'Steam Web API + Socket.io + Redis Cache',
   },
@@ -128,9 +128,32 @@ export const projects = [
       'Vite',
     ],
     links: {
-      github: 'https://github.com/ronakvaghela/gaming-website',
-      live:   null,
+      github: 'https://github.com/Ronak-1134/Gaming-Website-Clone',
+      live:   'https://gaming-website-clone-8q2c.vercel.app/',
     },
     highlight: 'GSAP ScrollTrigger + 3D tilt effects',
-  }
+  },
+  {
+  id:          'luminary-blog',
+  number:      '06', // Sequential numbering following your previous project
+  title:       'Luminary Blog',
+  subtitle:    'Premium Vanilla JS Blog Platform',
+  description:
+    'A production-quality, framework-free blog website featuring a sleek Apple/Medium-inspired ' +
+    'design. Showcases advanced vanilla JavaScript architecture, glassmorphism UI, a complete ' +
+    'client-side commenting/bookmarking engine, and high-performance intersection observer animations.',
+  featured:    true,
+  tags:        [
+    'HTML5',
+    'CSS3',
+    'Vanilla JavaScript',
+    'localStorage',
+    'IntersectionObserver',
+  ],
+  links: {
+    github: 'https://github.com/Ronak-1134/Blog-website',
+    live:   'https://blog-website-two-eta.vercel.app/', // Update with your actual live URL when deployed
+  },
+  highlight: 'Zero-framework architecture + local-storage state engine',
+}
 ];

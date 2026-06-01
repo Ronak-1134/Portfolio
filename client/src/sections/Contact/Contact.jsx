@@ -23,7 +23,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { gsap }                   from '../../utils/gsapConfig';
 import { useReducedMotion }       from '../../hooks/useReducedMotion';
-import { handleResumeDownload }   from '../../utils/firebase';
 import SectionLabel               from '../../components/ui/SectionLabel';
 import Button                     from '../../components/ui/Button';
 import styles                     from './Contact.module.css';
@@ -64,10 +63,8 @@ export default function Contact() {
   const paperRef       = useRef(null);
 
   const [form,          setForm]          = useState(EMPTY);
-  const [status,        setStatus]        = useState('idle'); // idle|sending|success|error
+  const [status,        setStatus]        = useState('idle');
   const [errorMsg,      setErrorMsg]      = useState('');
-  const [resumeLoading, setResumeLoading] = useState(false);
-  const [resumeError,   setResumeError]   = useState('');
   const [isFolded,      setIsFolded]      = useState(false);
 
   /* ---- Scroll reveal ---- */
@@ -182,14 +179,6 @@ export default function Contact() {
     }
   }
 
-  async function handleDownload() {
-    setResumeLoading(true);
-    setResumeError('');
-    const result = await handleResumeDownload();
-    setResumeLoading(false);
-    if (!result.success) setResumeError('Download unavailable.');
-  }
-
   const disabled = status === 'sending' || status === 'success';
 
   return (
@@ -240,14 +229,15 @@ export default function Contact() {
             <div className={styles.resumeBlock}>
               <Button
                 variant="ghost"
-                onClick={handleDownload}
-                disabled={resumeLoading}
+                href="/ronak-vaghela-resume.pdf"
+                target="_blank"
+                download
               >
-                {resumeLoading ? 'Preparing…' : 'Download Resume ↓'}
+                Download Resume ↓
               </Button>
-              {resumeError && (
-                <p className={styles.resumeError}>{resumeError}</p>
-              )}
+              <p className={styles.resumeError} style={{ opacity: 0.6 }}>
+                Place your PDF at: client/public/ronak-vaghela-resume.pdf
+              </p>
             </div>
           </div>
 

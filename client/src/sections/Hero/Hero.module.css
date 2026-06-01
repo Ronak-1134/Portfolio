@@ -121,8 +121,8 @@
   top:            0.12em;
   left:           calc(var(--content-padding) + 0.06em);
   z-index:        1;
-  /* SVG text stroke — outline only, no fill */
-  -webkit-text-stroke: 0.5px var(--color-stroke, #C4B89A);
+  /* Darker stroke — more visible behind the solid name */
+  -webkit-text-stroke: 1px var(--color-ink-secondary, #7A6E5F);
   color:               transparent;
   white-space:         nowrap;
   pointer-events:      none;
