@@ -3,7 +3,7 @@
 A full-stack portfolio built with surgical precision.
 The Architect's Drafting Table meets The Japanese Studio.
 
-**Live:** `https://ronakvaghela.vercel.app`
+**Live:** 'https://portfolio-cpth.vercel.app'
 **Backend:** Railway (Express + MongoDB)
 
 ---
