@@ -1,89 +1,79 @@
 /* ============================================================
    Button.jsx
-   Ronak Vaghela Portfolio — Button Component
+   Ronak Vaghela Portfolio — Magnetic Button Component
 
-   Three variants:
-     primary  — filled with --color-surface, 0.5px solid border
-                Hover: background deepens to --color-surface-hover
-     ghost    — transparent fill, 0.5px border
-                Hover: accent-faint fill, border darkens
-     text     — no border, no fill, just the label + arrow
-                Hover: label shifts right 3px, arrow extends
-
-   Renders <a> when href is provided, <button> otherwise.
-   Zero border-radius. 0.5px borders only.
-   No icons library — arrow is a plain text glyph "→".
-
-   Props:
-     variant   {string}   — "primary" | "ghost" | "text"
-     href      {string}   — renders as <a> if provided
-     onClick   {function} — click handler
-     children  {node}     — button label
-     external  {bool}     — adds target="_blank" rel="noopener"
-     disabled  {bool}     — disabled state
-     className {string}   — additional class from parent
-     arrow     {bool}     — append "→" arrow (default: true for text variant)
+   Variants: primary | ghost | text
+   Magnetic pull on primary + ghost variants.
+   Renders <a> when href provided, <button> otherwise.
    ============================================================ */
 
-import styles from './Button.module.css';
+import { useMagnet } from '../../hooks/useMagnet';
+import styles        from './Button.module.css';
 
 export default function Button({
   variant   = 'ghost',
   href,
+  target,
   onClick,
   children,
-  external  = false,
   disabled  = false,
   className = '',
-  arrow,
+  download  = false,
+  type      = 'button',
+  /* Magnet config — override per instance if needed */
+  magnetStrength = 0.35,
+  magnetRadius   = 90,
+  ...rest
 }) {
-  /* Default arrow: true for text variant, false for others */
-  const showArrow = arrow !== undefined
-    ? arrow
-    : variant === 'text';
+  /* Only magnetise primary and ghost — text buttons are inline */
+  const isMagnetic = variant === 'primary' || variant === 'ghost';
 
-  const variantClass = {
-    primary: styles.primary,
-    ghost:   styles.ghost,
-    text:    styles.text,
-  }[variant] || styles.ghost;
+  const magnetRef = useMagnet({
+    strength: magnetStrength,
+    radius:   magnetRadius,
+    disabled: !isMagnetic || disabled,
+  });
 
-  const commonProps = {
-    className: `
-      ${styles.btn}
-      ${variantClass}
-      ${disabled  ? styles.disabled : ''}
-      ${className}
-    `.trim().replace(/\s+/g, ' '),
-    onClick:  disabled ? undefined : onClick,
-    disabled: disabled || undefined,
+  const classNames = [
+    styles.btn,
+    styles[`btn--${variant}`],
+    isMagnetic ? styles['btn--magnetic'] : '',
+    disabled ? styles['btn--disabled'] : '',
+    className,
+  ].filter(Boolean).join(' ');
+
+  const sharedProps = {
+    className,
+    onClick,
+    ...rest,
   };
 
-  const inner = (
-    <>
-      <span className={styles.label}>{children}</span>
-      {showArrow && (
-        <span className={styles.arrow} aria-hidden="true">→</span>
-      )}
-    </>
-  );
-
-  if (href && !disabled) {
+  if (href) {
     return (
       <a
-        {...commonProps}
+        ref={magnetRef}
         href={href}
-        target={external ? '_blank'       : undefined}
-        rel={   external ? 'noopener noreferrer' : undefined}
+        target={target}
+        rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+        className={classNames}
+        download={download || undefined}
+        aria-disabled={disabled}
+        {...sharedProps}
       >
-        {inner}
+        <span className={styles.btnInner}>{children}</span>
       </a>
     );
   }
 
   return (
-    <button {...commonProps} type="button">
-      {inner}
+    <button
+      ref={magnetRef}
+      type={type}
+      className={classNames}
+      disabled={disabled}
+      {...sharedProps}
+    >
+      <span className={styles.btnInner}>{children}</span>
     </button>
   );
 }

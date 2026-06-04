@@ -44,7 +44,7 @@ export const education = [
     institution: 'LDCE Ahmedabad',
     location:    'Ahmedabad',
     year:        '2026',
-    result:      '7.92',
+    result:      '8.00',
     resultType:  'CGPA',
   },
 ];

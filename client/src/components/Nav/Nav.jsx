@@ -19,7 +19,7 @@
    ============================================================ */
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { scrollToSection } from '../../utils/gsapConfig';
+import { gsap, ScrollTrigger, scrollToSection } from '../../utils/gsapConfig';
 import Clock   from '../Clock/Clock';
 import styles from './Nav.module.css';
 
@@ -69,8 +69,63 @@ export default function Nav() {
   }, []);
 
   /* ----------------------------------------------------------
-     ACTIVE SECTION DETECTION
+     SCROLL-LINKED NAME COMPRESSION
+     Hero name fades + scales down as it approaches nav.
+     Nav brand subtly grows to "receive" it.
+     Scrubbed — perfectly tied to scroll position.
      ---------------------------------------------------------- */
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+
+    /* Wait for hero to mount */
+    const timer = setTimeout(() => {
+      const heroName = document.querySelector('[data-hero-name]');
+      const brandEl  = document.querySelector('[data-nav-brand]');
+      if (!heroName || !brandEl) return;
+
+      const heroSection = document.getElementById('hero');
+
+      /* Fade + scale the hero name as it scrolls toward nav */
+      const tween1 = gsap.fromTo(heroName,
+        { opacity: 1, scale: 1 },
+        {
+          opacity: 0,
+          scale:   0.92,
+          ease:    'none',
+          scrollTrigger: {
+            trigger:    heroSection || heroName,
+            start:      'top top',
+            end:        'center top',
+            scrub:      0.6,
+          },
+        }
+      );
+
+      /* Nav brand grows slightly as name compresses */
+      const tween2 = gsap.fromTo(brandEl,
+        { scale: 0.9, opacity: 0.6 },
+        {
+          scale:   1,
+          opacity: 1,
+          ease:    'none',
+          scrollTrigger: {
+            trigger: heroSection || heroName,
+            start:   'top top',
+            end:     '40% top',
+            scrub:   0.6,
+          },
+        }
+      );
+
+      return () => {
+        tween1.scrollTrigger?.kill();
+        tween2.scrollTrigger?.kill();
+      };
+    }, 600); /* Wait for loader + hero entrance */
+
+    return () => clearTimeout(timer);
+  }, []);
   useEffect(() => {
     const sections = NAV_LINKS
       .map(({ id }) => document.getElementById(id))
@@ -136,6 +191,7 @@ export default function Nav() {
             className={styles.brand}
             onClick={handleBrandClick}
             aria-label="Ronak Vaghela — scroll to top"
+            data-nav-brand
           >
             <span className={styles.brandRV}>RV</span>
             <span className={styles.brandUnderscore} aria-hidden="true">_</span>

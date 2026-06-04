@@ -50,7 +50,7 @@ export default function Marquee({
       <div className={styles.track}>
         <div
           className={styles.inner}
-          style={{ animationDuration: `${speed}s` }}
+          style={{ '--marquee-duration': `${speed}s` }}
         >
           {repeated.map((item, i) => (
             <span key={i} className={styles.item}>

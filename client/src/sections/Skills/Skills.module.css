@@ -122,7 +122,65 @@
 }
 
 /* ============================================================
-   SKILL CELL
+   CONNECTION LAYER — SVG overlay
+   ============================================================ */
+.tableWrap {
+  position: relative;
+}
+
+.connectionLayer {
+  position:       absolute;
+  inset:          0;
+  pointer-events: none;
+  z-index:        10;
+  overflow:       visible;
+}
+
+/* ============================================================
+   CELL STATES — active / highlighted / dimmed
+   ============================================================ */
+
+/* Active — the hovered cell */
+.cellActive {
+  background:   var(--color-bg, #F5F0E8) !important;
+  border-color: var(--color-accent, #8B5E3C) !important;
+  border-style: solid !important;
+  transform:    translateY(-4px) !important;
+  z-index:      5;
+}
+
+.cellActive .symbol {
+  color: var(--color-accent, #8B5E3C);
+}
+
+/* Highlighted — related to hovered cell */
+.cellHighlighted {
+  background:   var(--color-bg, #F5F0E8) !important;
+  border-color: var(--color-stroke-dark, #8B5E3C) !important;
+  border-style: dashed !important;
+  transform:    translateY(-2px) !important;
+  z-index:      4;
+}
+
+/* Dim — everything else when something is hovered */
+.cellDim {
+  opacity:   0.35 !important;
+  transform: none !important;
+}
+
+/* ---- LEGEND HINT ---- */
+.legendHint {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.52rem;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  opacity:        0.7;
+  font-style:     italic;
+}
+
+/* ============================================================
+   SKILL CELL — base
    ============================================================ */
 .cell {
   position:        relative;
@@ -138,14 +196,14 @@
   justify-content: center;
   cursor:          none;
   overflow:        hidden;
-
-  /* GSAP initial state */
-  opacity: 0;
+  opacity:         0; /* GSAP reveals */
 
   transition:
-    background    var(--duration-base, 240ms) var(--ease-hover),
-    border-color  var(--duration-base, 240ms) var(--ease-hover),
-    transform     var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1));
+    background    var(--duration-base, 240ms) ease,
+    border-color  var(--duration-base, 240ms) ease,
+    border-style  var(--duration-base, 240ms) ease,
+    transform     var(--duration-base, 240ms) var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)),
+    opacity       var(--duration-base, 240ms) ease;
 }
 
 .cell:hover {
@@ -281,45 +339,67 @@
    ============================================================ */
 @media (max-width: 900px) {
   .row {
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 56px 1fr;
+    gap:                   var(--space-3, 12px);
   }
 
-  .cells {
-    flex-wrap: wrap;
-  }
+  .cells { flex-wrap: wrap; }
 
-  .cell {
-    width:  80px;
-    height: 88px;
-  }
+  .cell { width: 78px; height: 86px; }
 }
 
 @media (max-width: 600px) {
   .row {
     grid-template-columns: 1fr;
+    gap:                   var(--space-2, 8px);
   }
 
   .rowLabel {
-    flex-direction: row;
-    align-items:    center;
-    border-right:   none;
-    border-bottom:  0.5px solid var(--color-stroke, #C4B89A);
-    padding-right:  0;
-    padding-bottom: var(--space-2, 8px);
-    height:         auto;
+    flex-direction:  row;
+    align-items:     center;
+    border-right:    none;
+    border-bottom:   0.5px solid var(--color-stroke, #C4B89A);
+    padding-right:   0;
+    padding-bottom:  var(--space-2, 8px);
+    height:          auto;
     justify-content: flex-start;
+    gap:             var(--space-2, 8px);
   }
 
   .rowName { text-align: left; }
 
-  .cell {
-    width:  72px;
-    height: 80px;
+  /* Cells scroll horizontally per row on mobile */
+  .cells {
+    flex-wrap:                  nowrap;
+    overflow-x:                 auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width:            none;
+    padding-bottom:             var(--space-2, 8px);
+    gap:                        var(--space-2, 8px);
   }
 
-  .legend {
-    display: none;
+  .cells::-webkit-scrollbar { display: none; }
+
+  .cell {
+    width:      76px;
+    height:     84px;
+    flex-shrink: 0;
+    /* On touch — always show profLevel, no hover */
+    opacity:    1 !important;
   }
+
+  /* Show proficiency number always on mobile (no hover available) */
+  .profLevel { opacity: 0.7 !important; }
+
+  /* Show profLabel always on mobile */
+  .profLabel { opacity: 0.6 !important; }
+
+  .legend { display: none; }
+
+  /* Connection lines don't work on touch — hide hint */
+  .legendHint { display: none; }
+
+  .tableWrap { overflow: visible; }
 }
 
 /* ---- REDUCED MOTION ---- */

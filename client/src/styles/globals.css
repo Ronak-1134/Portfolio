@@ -118,6 +118,29 @@ body {
   cursor:                  none;
 }
 
+/* ---- PAPER NOISE TEXTURE ----
+   A fixed SVG feTurbulence noise layer sits above everything
+   at 3.5% opacity. Felt, not seen. Turns flat digital cream
+   into something that has been touched.
+   z-index sits below cursor (9999) and loader (9998).
+   pointer-events: none — completely inert.
+   -------------------------------- */
+body::after {
+  content:        '';
+  position:       fixed;
+  inset:          0;
+  z-index:        9990;
+  pointer-events: none;
+  opacity:        0.035;
+  /* Inline SVG noise — no external file needed */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size:   300px 300px;
+  /* Mix-multiply darkens unevenly — paper grain not uniform dust */
+  mix-blend-mode: multiply;
+  will-change:    transform;
+}
+
 a, button, [role="button"], input, textarea, select, label { cursor: none; }
 
 ::selection { background-color: var(--color-accent-faint); color: var(--color-ink-primary); }

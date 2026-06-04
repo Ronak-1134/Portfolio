@@ -1,17 +1,5 @@
 /* ============================================================
-   Education.jsx
-   Ronak Vaghela Portfolio — Education Section
-
-   Layout:
-     SectionLabel "01 — Education"
-     SVG ruler graphic spanning full table width
-     Table with three rows: SSC, HSC, B.E
-     Columns: Examination · Board · Institution · Year · Result
-
-   Aesthetic: a filled-in academic form.
-   Borders 0.5px. Institution names in Cormorant italic.
-   Scores and years in JetBrains Mono.
-   Each row reveals on scroll with 150ms stagger.
+   Education.jsx — Official Academic Record Document
    ============================================================ */
 
 import { useEffect, useRef } from 'react';
@@ -21,186 +9,115 @@ import CountUp               from '../../components/CountUp/CountUp';
 import { education }         from '../../data/education';
 import styles                from './Education.module.css';
 
-/* ------------------------------------------------------------
-   RULER SVG
-   A horizontal measurement ruler above the table.
-   Tick marks at every 10px, longer marks every 5th.
-   Rendered inline so it scales with the table.
-   ------------------------------------------------------------ */
-function RulerSVG({ width = 800 }) {
-  const TICK_INTERVAL  = 10;   /* px between minor ticks  */
-  const MINOR_H        =  6;   /* minor tick height        */
-  const MAJOR_H        = 12;   /* major tick height (×5)   */
-  const LABEL_EVERY    =  5;   /* label every 5th major    */
-  const TOTAL_TICKS    = Math.floor(width / TICK_INTERVAL);
+/* Document metadata */
+const DOC_NUMBER  = 'FORM-AC/2024/0339';
+const ISSUED_BY   = 'L.D. College of Engineering, Ahmedabad';
+const ISSUED_DATE = '2024–2026';
 
-  const ticks = [];
-  for (let i = 0; i <= TOTAL_TICKS; i++) {
-    const x       = i * TICK_INTERVAL;
-    const isMajor = i % 5 === 0;
-    const hasLabel = isMajor && i % (5 * LABEL_EVERY) === 0 && i > 0;
-    ticks.push({ x, isMajor, hasLabel, value: i * TICK_INTERVAL });
-  }
-
-  return (
-    <svg
-      className={styles.ruler}
-      viewBox={`0 0 ${width} 28`}
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      role="presentation"
-    >
-      {/* Base line */}
-      <line
-        x1="0"   y1="0"
-        x2={width} y2="0"
-        stroke="#C4B89A"
-        strokeWidth="0.5"
-      />
-
-      {/* Ticks */}
-      {ticks.map(({ x, isMajor, hasLabel, value }) => (
-        <g key={x}>
-          <line
-            x1={x}
-            y1="0"
-            x2={x}
-            y2={isMajor ? MAJOR_H : MINOR_H}
-            stroke={isMajor ? '#B5AA96' : '#C4B89A'}
-            strokeWidth="0.5"
-          />
-          {hasLabel && (
-            <text
-              x={x}
-              y={MAJOR_H + 10}
-              fontSize="6"
-              fontFamily="'JetBrains Mono', monospace"
-              fill="#B5AA96"
-              textAnchor="middle"
-              letterSpacing="0.05em"
-            >
-              {value}
-            </text>
-          )}
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------
-   COMPONENT
-   ------------------------------------------------------------ */
 export default function Education() {
-  const sectionRef = useRef(null);
-  const tableRef   = useRef(null);
-  const rulerRef   = useRef(null);
-  const rowRefs    = useRef([]);
+  const sectionRef  = useRef(null);
+  const documentRef = useRef(null);
+  const rowRefs     = useRef([]);
 
-  /* ----------------------------------------------------------
-     SCROLL REVEAL
-     Ruler draws from left (scaleX 0→1).
-     Table rows stagger in with 150ms delay between each.
-     ---------------------------------------------------------- */
   useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
 
-    if (prefersReduced) {
-      gsap.set([rulerRef.current, ...rowRefs.current], {
-        opacity: 1, y: 0, scaleX: 1, clearProps: 'all',
-      });
-      return;
-    }
-
-    /* Ruler scaleX reveal */
-    gsap.fromTo(
-      rulerRef.current,
-      { scaleX: 0, transformOrigin: 'left center', opacity: 0 },
+    /* Whole document unfolds into view */
+    gsap.fromTo(documentRef.current,
+      { opacity: 0, y: 32, rotateX: 4, transformPerspective: 800, transformOrigin: 'top center' },
       {
-        scaleX: 1, opacity: 1, duration: 1.0, ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start:   'top 80%',
-          once:    true,
-        },
+        opacity: 1, y: 0, rotateX: 0,
+        duration: 1.0, ease: 'power3.out',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 78%', once: true },
       }
     );
 
-    /* Table header reveal */
-    gsap.fromTo(
-      tableRef.current?.querySelector('thead'),
-      { opacity: 0, y: 12 },
-      {
-        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start:   'top 78%',
-          once:    true,
-        },
-        delay: 0.2,
-      }
-    );
-
-    /* Rows stagger — 150ms between each */
+    /* Rows stagger in */
     rowRefs.current.forEach((row, i) => {
       if (!row) return;
-      gsap.fromTo(
-        row,
-        { opacity: 0, y: 18 },
+      gsap.fromTo(row,
+        { opacity: 0, x: -12 },
         {
-          opacity: 1, y: 0,
-          duration: 0.75,
-          ease:     'power3.out',
-          delay:    0.4 + i * 0.15,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start:   'top 75%',
-            once:    true,
-          },
+          opacity: 1, x: 0, duration: 0.6, ease: 'power3.out',
+          delay: 0.35 + i * 0.15,
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 75%', once: true },
         }
       );
     });
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="education"
-      className={`${styles.section} section-base`}
-      aria-labelledby="education-heading"
-    >
-      <div className="section-wrapper">
+    <section ref={sectionRef} id="education" className={styles.section} aria-label="Education">
+      <div className={styles.inner}>
 
-        {/* ---- SECTION LABEL ---- */}
-        <div className={styles.labelRow} data-reveal>
-          <SectionLabel number="01" label="Education" />
-        </div>
+        <SectionLabel number="01" label="Education" />
 
-        {/* ---- HEADING ---- */}
-        <h2
-          id="education-heading"
-          className={styles.heading}
-          data-reveal
-        >
-          Academic Record
-        </h2>
+        {/* The document */}
+        <div ref={documentRef} className={styles.document}>
 
-        {/* ---- RULER ---- */}
-        <div ref={rulerRef} className={styles.rulerWrapper}>
-          <RulerSVG />
-        </div>
+          {/* ---- DOCUMENT HEADER ---- */}
+          <div className={styles.docHeader}>
+            {/* Left: institution seal area */}
+            <div className={styles.docHeaderLeft}>
+              <div className={styles.seal} aria-hidden="true">
+                <span className={styles.sealInner}>GTU</span>
+              </div>
+              <div className={styles.docHeaderMeta}>
+                <span className={styles.docTitle}>Academic Record</span>
+                <span className={styles.docSubtitle}>
+                  Gujarat Technological University · Affiliated Institution
+                </span>
+              </div>
+            </div>
 
-        {/* ---- TABLE ---- */}
-        <div className={styles.tableWrapper}>
-          <table
-            ref={tableRef}
-            className={styles.table}
-            aria-label="Education history"
-          >
+            {/* Right: form number + date */}
+            <div className={styles.docHeaderRight}>
+              <div className={styles.docField}>
+                <span className={styles.docFieldLabel}>Document No.</span>
+                <span className={styles.docFieldValue}>{DOC_NUMBER}</span>
+              </div>
+              <div className={styles.docField}>
+                <span className={styles.docFieldLabel}>Period</span>
+                <span className={styles.docFieldValue}>{ISSUED_DATE}</span>
+              </div>
+              <div className={styles.docField}>
+                <span className={styles.docFieldLabel}>Issued by</span>
+                <span className={styles.docFieldValue}>{ISSUED_BY}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Header rule */}
+          <div className={styles.docRule} />
+
+          {/* ---- CANDIDATE ROW ---- */}
+          <div className={styles.candidateRow}>
+            <div className={styles.candidateField}>
+              <span className={styles.docFieldLabel}>Candidate Name</span>
+              <span className={styles.candidateName}>Ronak Vaghela</span>
+            </div>
+            <div className={styles.candidateField}>
+              <span className={styles.docFieldLabel}>Programme</span>
+              <span className={styles.candidateValue}>
+                B.E Computer Engineering
+              </span>
+            </div>
+            <div className={styles.candidateField}>
+              <span className={styles.docFieldLabel}>Enrolment Status</span>
+              <span className={styles.statusBadge}>
+                <span className={styles.statusDot} />
+                Active · 2022–2026
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.docRule} />
+
+          {/* ---- TABLE ---- */}
+          <table className={styles.table} aria-label="Academic qualifications">
             <thead>
-              <tr className={styles.headerRow}>
+              <tr>
                 <th className={styles.th} scope="col">Examination</th>
                 <th className={styles.th} scope="col">Board</th>
                 <th className={styles.th} scope="col">Institution</th>
@@ -208,72 +125,56 @@ export default function Education() {
                 <th className={`${styles.th} ${styles.thRight}`}  scope="col">Result</th>
               </tr>
             </thead>
-
             <tbody>
               {education.map((row, i) => (
                 <tr
                   key={row.id}
-                  ref={(el) => { rowRefs.current[i] = el; }}
-                  className={`${styles.row} ${row.id === 'be' ? styles.rowFeatured : ''}`}
+                  ref={el => rowRefs.current[i] = el}
+                  className={`${styles.row} ${i === 0 ? styles.rowFeatured : ''}`}
                 >
-                  {/* Examination */}
                   <td className={styles.td}>
-                    <span className={styles.examinationName}>
-                      {row.examination}
-                    </span>
+                    <span className={styles.examinationName}>{row.examination}</span>
                   </td>
-
-                  {/* Board */}
                   <td className={styles.td}>
-                    <span className={styles.boardName}>
-                      {row.board}
-                    </span>
+                    <span className={styles.boardName}>{row.board}</span>
                   </td>
-
-                  {/* Institution */}
                   <td className={styles.td}>
-                    <span className={styles.institutionName}>
-                      {row.institution}
-                    </span>
-                    <span className={styles.institutionLocation}>
-                      {row.location}
-                    </span>
+                    <span className={styles.institutionName}>{row.institution}</span>
                   </td>
-
-                  {/* Year */}
                   <td className={`${styles.td} ${styles.tdCenter}`}>
-                    <span className={styles.yearValue}>
-                      {row.year}
-                    </span>
+                    <span className={styles.yearValue}>{row.year}</span>
                   </td>
-
-                  {/* Result */}
                   <td className={`${styles.td} ${styles.tdRight}`}>
                     <span className={styles.resultValue}>
                       <CountUp
                         target={parseFloat(row.result)}
                         decimals={row.result.includes('.') ? row.result.split('.')[1].length : 0}
-                        suffix=""
                         duration={1600}
                       />
-                      <span className={styles.resultType}>
-                        {row.resultType}
-                      </span>
+                      <span className={styles.resultType}>{row.resultType}</span>
                     </span>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
 
-        {/* ---- FOOTNOTE ---- */}
-        <div className={styles.footnote} data-reveal>
-          <span className={styles.footnoteText}>
-            ↳ Currently enrolled · Expected graduation 2026
-          </span>
-        </div>
+          {/* ---- DOCUMENT FOOTER ---- */}
+          <div className={styles.docFooter}>
+            <span className={styles.docFooterNote}>
+              ↳ Currently enrolled · Expected graduation May 2026
+            </span>
+            <span className={styles.docFooterStamp}>
+              Verified · {DOC_NUMBER}
+            </span>
+          </div>
 
+          {/* Watermark */}
+          <div className={styles.watermark} aria-hidden="true">
+            ACADEMIC RECORD
+          </div>
+
+        </div>
       </div>
     </section>
   );

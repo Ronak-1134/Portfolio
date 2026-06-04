@@ -8,7 +8,7 @@
    ============================================================ */
 
 /* ---- WRAPPER ---- */
-.eWrapper {
+.marqueeWrapper {
   /* Full bleed — breaks out of parent max-width */
   position:   relative;
   width:      100vw;
@@ -56,16 +56,16 @@
   padding:         var(--space-4, 16px) 0;
 
   /* The scroll animation */
-  animation:       e-scroll linear infinite;
+  animation:       marquee-scroll var(--marquee-duration, 38s) linear infinite;
   will-change:     transform;
 }
 
 /* Pause on hover — lets the user actually read it */
-.MarqueeWrapper:hover .inner {
+.marqueeWrapper:hover .inner {
   animation-play-state: paused;
 }
 
-@keyframes Marquee-scroll {
+@keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-33.333%); }
 }
@@ -100,7 +100,7 @@
 }
 
 /* Highlight an item when hovered */
-.MarqueeWrapper:hover .itemText {
+.marqueeWrapper:hover .itemText {
   color: var(--color-ink-secondary, #7A6E5F);
 }
 
@@ -144,7 +144,7 @@
 
 /* ---- PRINT ---- */
 @media print {
-  .MarqueeWrapper {
+  .marqueeWrapper {
     display: none;
   }
 }

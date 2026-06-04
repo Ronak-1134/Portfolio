@@ -1,33 +1,29 @@
 /* ============================================================
    Contact.jsx — Telegram / Letter Form
-   Ronak Vaghela Portfolio
+   No backend. Uses EmailJS to send directly from the browser.
+   Resume links to a public PDF you host anywhere (Google Drive,
+   Notion, Vercel public folder, etc.)
 
-   Layout:
-     — SectionLabel + heading "Draw up a brief."
-     — Left column: annotated links + resume button
-     — Right column: the letter form
-         Header: "To: Ronak Vaghela  ·  From: [name]"
-         Date stamp (auto-filled, today's date)
-         One large textarea — the letter body
-         Inline name + email fields at the top
-         Send button bottom-right: "Send →"
-
-   On submit:
-     — The paper "folds" — CSS perspective fold animation
-     — After fold completes: "Received." appears
-     — Unfolds if there's an error
-
-   POST → /api/contact
+   Setup (free):
+     1. Create account at emailjs.com
+     2. Add an Email Service (Gmail works)
+     3. Create a Template with variables:
+          {{from_name}}, {{from_email}}, {{message}}
+     4. Add to client/.env.local:
+          VITE_EMAILJS_SERVICE_ID=service_xxxxxxx
+          VITE_EMAILJS_TEMPLATE_ID=template_xxxxxxx
+          VITE_EMAILJS_PUBLIC_KEY=xxxxxxxxxxxxxxx
+          VITE_RESUME_URL=https://your-resume-link.pdf
    ============================================================ */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { gsap }                   from '../../utils/gsapConfig';
-import { useReducedMotion }       from '../../hooks/useReducedMotion';
-import SectionLabel               from '../../components/ui/SectionLabel';
-import Button                     from '../../components/ui/Button';
-import styles                     from './Contact.module.css';
+import { gsap }             from '../../utils/gsapConfig';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import SectionLabel         from '../../components/ui/SectionLabel';
+import Button               from '../../components/ui/Button';
+import Envelope             from '../../components/Envelope/Envelope';
+import styles               from './Contact.module.css';
 
-/* ---- Links ---- */
 const LINKS = [
   {
     label: 'Email', value: 'ronakvaghela3355@gmail.com',
@@ -46,7 +42,6 @@ const LINKS = [
   },
 ];
 
-/* ---- Today's date for the letter stamp ---- */
 function getTodayStamp() {
   return new Date().toLocaleDateString('en-GB', {
     day: '2-digit', month: 'long', year: 'numeric',
@@ -55,6 +50,44 @@ function getTodayStamp() {
 
 const EMPTY = { name: '', email: '', message: '' };
 
+/* ---- Send via EmailJS (loaded from CDN, no npm needed) ---- */
+async function sendViaEmailJS(form) {
+  const serviceId  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+  const publicKey  = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+  /* Fallback: if EmailJS not configured, open native mailto */
+  if (!serviceId || !templateId || !publicKey) {
+    const subject = encodeURIComponent(`Portfolio contact from ${form.name}`);
+    const body    = encodeURIComponent(form.message);
+    window.location.href =
+      `mailto:ronakvaghela3355@gmail.com?subject=${subject}&body=${body}`;
+    return { success: true, fallback: true };
+  }
+
+  /* Lazy-load EmailJS SDK */
+  if (!window.emailjs) {
+    await new Promise((resolve, reject) => {
+      const script  = document.createElement('script');
+      script.src    = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    window.emailjs.init({ publicKey });
+  }
+
+  const result = await window.emailjs.send(serviceId, templateId, {
+    from_name:  form.name,
+    from_email: form.email,
+    message:    form.message,
+    reply_to:   form.email,
+  });
+
+  if (result.status !== 200) throw new Error('EmailJS returned non-200');
+  return { success: true };
+}
+
 export default function Contact() {
   const prefersReduced = useReducedMotion();
   const sectionRef     = useRef(null);
@@ -62,24 +95,19 @@ export default function Contact() {
   const linksRef       = useRef(null);
   const paperRef       = useRef(null);
 
-  const [form,          setForm]          = useState(EMPTY);
-  const [status,        setStatus]        = useState('idle');
-  const [errorMsg,      setErrorMsg]      = useState('');
-  const [isFolded,      setIsFolded]      = useState(false);
+  const [form,     setForm]     = useState(EMPTY);
+  const [status,   setStatus]   = useState('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [isFolded, setIsFolded] = useState(false);
 
-  /* ---- Scroll reveal ---- */
+  /* Scroll reveal */
   useEffect(() => {
     if (prefersReduced) return;
     const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start:   'top 78%',
-        once:    true,
-      },
+      scrollTrigger: { trigger: sectionRef.current, start: 'top 78%', once: true },
     });
     tl.fromTo(headingRef.current,
-      { opacity: 0, y: 28 },
-      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }
+      { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }
     );
     if (linksRef.current?.children) {
       tl.fromTo(Array.from(linksRef.current.children),
@@ -89,14 +117,13 @@ export default function Contact() {
       );
     }
     tl.fromTo(paperRef.current,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+      { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
       '-=0.5'
     );
     return () => tl.kill();
   }, [prefersReduced]);
 
-  /* ---- Paper fold animation ---- */
+  /* Paper fold */
   const foldPaper = useCallback(() => {
     if (prefersReduced) return Promise.resolve();
     return new Promise(resolve => {
@@ -104,21 +131,11 @@ export default function Contact() {
       if (!paper) return resolve();
       gsap.timeline({ onComplete: resolve })
         .to(paper, {
-          rotateX:             -8,
-          scaleY:              0.96,
-          transformPerspective: 900,
-          transformOrigin:     'top center',
-          opacity:             0.7,
-          duration:            0.35,
-          ease:                'power2.in',
+          rotateX: -8, scaleY: 0.96,
+          transformPerspective: 900, transformOrigin: 'top center',
+          opacity: 0.7, duration: 0.35, ease: 'power2.in',
         })
-        .to(paper, {
-          rotateX:  0,
-          scaleY:   1,
-          opacity:  1,
-          duration: 0.25,
-          ease:     'power2.out',
-        });
+        .to(paper, { rotateX: 0, scaleY: 1, opacity: 1, duration: 0.25, ease: 'power2.out' });
     });
   }, [prefersReduced]);
 
@@ -130,18 +147,15 @@ export default function Contact() {
     );
   }, [prefersReduced]);
 
-  /* ---- Handlers ---- */
   function handleChange(e) {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
       setStatus('error');
       setErrorMsg('Name, email, and message are all required.');
-      unfoldPaper();
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -152,60 +166,40 @@ export default function Contact() {
 
     setStatus('sending');
     setErrorMsg('');
-
-    /* Fold paper while sending */
     await foldPaper();
 
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL ?? ''}/api/contact`,
-        {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(form),
-        }
-      );
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || 'Something went wrong.');
-      }
+      await sendViaEmailJS(form);
       setStatus('success');
       setIsFolded(true);
       setForm(EMPTY);
     } catch (err) {
       setStatus('error');
-      setErrorMsg(err.message || 'Failed to send. Please email directly.');
+      setErrorMsg('Failed to send. Click to email directly instead.');
       unfoldPaper();
     }
   }
 
-  const disabled = status === 'sending' || status === 'success';
+  /* Resume URL — set VITE_RESUME_URL in .env.local */
+  const resumeUrl = import.meta.env.VITE_RESUME_URL || '/ronak-vaghela-resume.pdf';
+  const disabled  = status === 'sending' || status === 'success';
 
   return (
-    <section
-      ref={sectionRef}
-      className={styles.contact}
-      id="contact"
-      aria-label="Contact"
-    >
+    <section ref={sectionRef} className={styles.contact} id="contact" aria-label="Contact">
       <div className={styles.inner}>
 
         <SectionLabel number="05" label="Contact" />
 
-        {/* ---- HEADING ---- */}
+        {/* Heading */}
         <div ref={headingRef} className={styles.headingBlock}>
           <h2 className={styles.heading}>Draw up a brief.</h2>
-          {/* Sepia rule — accent #4 of 4 */}
           <div className={styles.headingRule} aria-hidden="true" />
-          <p className={styles.subline}>
-            Open to full-time roles and interesting problems.
-          </p>
+          <p className={styles.subline}>Open to full-time roles and interesting problems.</p>
         </div>
 
-        {/* ---- BODY ---- */}
         <div className={styles.body}>
 
-          {/* LEFT — Links */}
+          {/* LEFT */}
           <div ref={linksRef} className={styles.leftCol}>
             {LINKS.map(link => (
               <div key={link.label} className={styles.linkItem}>
@@ -225,132 +219,78 @@ export default function Contact() {
               </div>
             ))}
 
-            {/* Resume */}
+            {/* Resume download — just a link */}
             <div className={styles.resumeBlock}>
               <Button
                 variant="ghost"
-                href="/ronak-vaghela-resume.pdf"
+                href={resumeUrl}
                 target="_blank"
-                download
+                download="ronak-vaghela-resume.pdf"
               >
                 Download Resume ↓
               </Button>
-              <p className={styles.resumeError} style={{ opacity: 0.6 }}>
-                Place your PDF at: client/public/ronak-vaghela-resume.pdf
+              <p className={styles.resumeHint}>
+                Set VITE_RESUME_URL in .env.local to any public PDF link
               </p>
             </div>
           </div>
 
-          {/* RIGHT — The Letter */}
+          {/* RIGHT — Letter form */}
           <div
             ref={paperRef}
             className={`${styles.paper} ${isFolded ? styles.paperSent : ''}`}
-            style={{ opacity: 0 }} /* GSAP reveals */
+            style={{ opacity: 0 }}
           >
             {status === 'success' ? (
-              /* ---- RECEIVED STATE ---- */
-              <div className={styles.receivedState}>
-                <p className={styles.receivedWord}>Received.</p>
-                <p className={styles.receivedNote}>
-                  I'll read it carefully and be in touch.
-                </p>
-                <button
-                  className={styles.sendAnother}
-                  onClick={() => {
-                    setStatus('idle');
-                    setIsFolded(false);
-                    unfoldPaper();
-                  }}
-                >
-                  Send another →
-                </button>
-              </div>
+              <Envelope
+                onSendAnother={() => {
+                  setStatus('idle');
+                  setIsFolded(false);
+                  unfoldPaper();
+                }}
+              />
             ) : (
-              /* ---- LETTER FORM ---- */
-              <form
-                className={styles.form}
-                onSubmit={handleSubmit}
-                noValidate
-                aria-label="Contact form — write a letter"
-              >
-                {/* Letter header */}
+              <form className={styles.form} onSubmit={handleSubmit} noValidate>
                 <div className={styles.letterHeader}>
                   <div className={styles.letterTo}>
                     <span className={styles.letterHeaderLabel}>To</span>
-                    <span className={styles.letterHeaderValue}>
-                      Ronak Vaghela
-                    </span>
+                    <span className={styles.letterHeaderValue}>Ronak Vaghela</span>
                   </div>
                   <div className={styles.letterFrom}>
                     <span className={styles.letterHeaderLabel}>From</span>
-                    <input
-                      className={styles.letterInput}
-                      type="text"
-                      name="name"
-                      value={form.name}
-                      onChange={handleChange}
-                      placeholder="Your name"
-                      autoComplete="name"
-                      disabled={disabled}
-                      aria-label="Your name"
-                    />
+                    <input className={styles.letterInput} type="text" name="name"
+                      value={form.name} onChange={handleChange}
+                      placeholder="Your name" autoComplete="name" disabled={disabled} />
                   </div>
                   <div className={styles.letterEmail}>
                     <span className={styles.letterHeaderLabel}>Email</span>
-                    <input
-                      className={styles.letterInput}
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="your@email.com"
-                      autoComplete="email"
-                      disabled={disabled}
-                      aria-label="Your email"
-                    />
+                    <input className={styles.letterInput} type="email" name="email"
+                      value={form.email} onChange={handleChange}
+                      placeholder="your@email.com" autoComplete="email" disabled={disabled} />
                   </div>
                   <div className={styles.letterDate}>
                     <span className={styles.letterHeaderLabel}>Date</span>
-                    <span className={styles.letterDateValue}>
-                      {getTodayStamp()}
-                    </span>
+                    <span className={styles.letterDateValue}>{getTodayStamp()}</span>
                   </div>
                 </div>
 
-                {/* Divider rule */}
                 <div className={styles.letterRule} aria-hidden="true" />
 
-                {/* The letter body — one large textarea */}
                 <textarea
                   className={styles.letterBody}
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  placeholder={
-                    "Dear Ronak,\n\nI'd like to discuss…"
-                  }
-                  rows={8}
-                  disabled={disabled}
-                  aria-label="Your message"
+                  name="message" value={form.message} onChange={handleChange}
+                  placeholder={"Dear Ronak,\n\nI'd like to discuss…"}
+                  rows={8} disabled={disabled}
                 />
 
-                {/* Footer: error + send button */}
                 <div className={styles.letterFooter}>
                   {status === 'error' && errorMsg && (
-                    <p className={styles.errorMsg} role="alert">
-                      {errorMsg}
-                    </p>
+                    <p className={styles.errorMsg} role="alert">{errorMsg}</p>
                   )}
-                  <button
-                    type="submit"
-                    className={styles.sendBtn}
-                    disabled={disabled}
-                    aria-label="Send message"
-                  >
+                  <button type="submit" className={styles.sendBtn} disabled={disabled}>
                     {status === 'sending' ? 'Sending…' : 'Send →'}
                   </button>
                 </div>
-
               </form>
             )}
           </div>
@@ -358,21 +298,16 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* ---- FOOTER ---- */}
+      {/* Footer */}
       <footer className={styles.footer} role="contentinfo">
         <div className={styles.footerInner}>
           <div className={styles.footerRule} />
           <div className={styles.footerRow}>
-            <p className={styles.footerCopy}>
-              © {new Date().getFullYear()} Ronak Vaghela
-            </p>
-            <p className={styles.footerCraft}>
-              Crafted with intention
-            </p>
+            <p className={styles.footerCopy}>© {new Date().getFullYear()} Ronak Vaghela</p>
+            <p className={styles.footerCraft}>Crafted with intention</p>
           </div>
         </div>
       </footer>
-
     </section>
   );
 }

@@ -173,33 +173,72 @@
    RESPONSIVE — vertical stack on mobile
    ============================================================ */
 @media (max-width: 768px) {
-  .stripWrap {
-    width:     100%;
-    left:      auto;
-    transform: none;
-    overflow:  visible;
-    cursor:    default;
+  .projects {
+    padding-top:    var(--section-padding);
+    padding-bottom: var(--section-padding);
   }
+
+  .stripWrap {
+    width:      100%;
+    left:       auto;
+    transform:  none;
+    overflow:   hidden;
+    cursor:     default;
+    /* Native horizontal scroll on touch */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* hide scrollbar */
+  }
+
+  .stripWrap::-webkit-scrollbar { display: none; }
 
   .track {
-    flex-direction: column;
-    width:          100%;
+    flex-direction: row;  /* keep horizontal — use native scroll */
+    width:          max-content;
     padding:        0 var(--content-padding);
-    gap:            var(--space-5, 20px);
+    gap:            var(--space-4, 16px);
   }
 
-  .cardSlot,
+  .cardSlot {
+    width:             80vw;
+    max-width:         320px;
+    height:            420px;
+    flex-shrink:       0;
+    scroll-snap-align: start;
+  }
+
   .cardSlotFeatured {
-    width:  100%;
-    height: auto;
-    min-height: 280px;
+    width:             90vw;
+    max-width:         380px;
+    height:            420px;
+    scroll-snap-align: start;
   }
 
-  .edgeFade { display: none; }
-
-  .dragHint { display: none; }
+  .edgeFade  { display: none; }
+  .dragHint  {
+    /* Change hint text to swipe on mobile */
+    display: flex;
+  }
 
   .endCap { display: none; }
+}
+
+@media (max-width: 768px) {
+  /* Override dragLabel text for touch */
+  .dragLabel::after {
+    content: 'swipe to explore';
+  }
+  .dragLabel {
+    font-size: 0;  /* hide original text */
+  }
+  .dragLabel::after {
+    font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+    font-size:      var(--text-xs, 0.65rem);
+    letter-spacing: var(--tracking-mono, 0.12em);
+    text-transform: uppercase;
+    color:          var(--color-ink-ghost, #B5AA96);
+  }
 }
 
 /* ---- REDUCED MOTION ---- */

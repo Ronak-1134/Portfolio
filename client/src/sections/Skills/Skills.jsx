@@ -1,37 +1,52 @@
 /* ============================================================
-   Skills.jsx — Periodic Table Grid
-   Ronak Vaghela Portfolio
-
-   Each skill is a cell:
-     — Atomic number (top-left, JetBrains Mono tiny)
-     — Symbol (centre, Cormorant large)
-     — Full name (bottom-centre, DM Sans small)
-     — Proficiency bar (very thin, bottom edge of cell)
-
-   Cells are grouped into category rows.
-   Category label floats above each row as a column header.
-
-   Hover: cell lifts, symbol enlarges slightly, proficiency
-   number appears in the top-right corner.
-
-   Scroll reveal: cells stagger in row by row.
+   Skills.jsx — Periodic Table + Connection Lines
+   Hover a cell → SVG lines draw to related skills
    ============================================================ */
 
-import { useEffect, useRef, useState } from 'react';
-import { gsap }                        from '../../utils/gsapConfig';
-import { useReducedMotion }            from '../../hooks/useReducedMotion';
-import SectionLabel                    from '../../components/ui/SectionLabel';
-import { skills }                      from '../../data/skills';
-import styles                          from './Skills.module.css';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { gsap }             from '../../utils/gsapConfig';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import SectionLabel         from '../../components/ui/SectionLabel';
+import { skills }           from '../../data/skills';
+import styles               from './Skills.module.css';
 
 /* ----------------------------------------------------------
-   Single skill cell
+   RELATIONSHIP MAP
+   skill name → array of related skill names
    ---------------------------------------------------------- */
-function SkillCell({ skill, delay = 0 }) {
-  const [hovered, setHovered] = useState(false);
-  const cellRef = useRef(null);
+const RELATIONS = {
+  'JavaScript':  ['React.js', 'Node.js', 'GSAP', 'Express.js'],
+  'React.js':    ['JavaScript', 'Redux', 'Node.js', 'Tailwind'],
+  'Node.js':     ['JavaScript', 'Express.js', 'MongoDB', 'REST APIs'],
+  'Express.js':  ['Node.js', 'MongoDB', 'REST APIs', 'JavaScript'],
+  'MongoDB':     ['Node.js', 'Express.js', 'Firebase'],
+  'Firebase':    ['MongoDB', 'JavaScript', 'React.js'],
+  'PostgreSQL':  ['Node.js', '.NET Core', 'Swagger'],
+  'Python':      ['AI Agents', 'IBM Tools'],
+  'GSAP':        ['JavaScript', 'React.js'],
+  'HTML & CSS':  ['JavaScript', 'React.js', 'Tailwind'],
+  'Tailwind':    ['HTML & CSS', 'React.js'],
+  'Angular':     ['.NET Core', 'JavaScript'],
+  '.NET Core':   ['Angular', 'PostgreSQL', 'C#'],
+  'Git & GitHub':['JavaScript', 'Node.js', 'React.js'],
+  'REST APIs':   ['Node.js', 'Express.js', 'Swagger'],
+  'AWS':         ['Node.js', 'REST APIs'],
+  'Swagger':     ['REST APIs', 'Express.js', '.NET Core'],
+  'SQL':         ['PostgreSQL', 'MySQL'],
+  'MySQL':       ['SQL', 'Node.js'],
+  'Java':        ['SQL'],
+  'C':           ['Java'],
+};
 
-  /* Map level 0–100 to a proficiency label */
+/* ----------------------------------------------------------
+   Flatten all skills into a lookup map: name → atomic index
+   ---------------------------------------------------------- */
+const allSkills = skills.flatMap(cat => cat.items);
+
+/* ----------------------------------------------------------
+   SkillCell
+   ---------------------------------------------------------- */
+function SkillCell({ skill, onHover, onLeave, isHighlighted, isActive }) {
   function profLabel(level) {
     if (level >= 85) return 'Expert';
     if (level >= 70) return 'Proficient';
@@ -41,32 +56,22 @@ function SkillCell({ skill, delay = 0 }) {
 
   return (
     <div
-      ref={cellRef}
-      className={styles.cell}
-      style={{ '--prof-width': `${skill.level}%`, '--cell-delay': `${delay}s` }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      aria-label={`${skill.name}: ${skill.level}% proficiency — ${profLabel(skill.level)}`}
-      data-cursor="link"
+      className={`
+        ${styles.cell}
+        ${isActive      ? styles.cellActive      : ''}
+        ${isHighlighted ? styles.cellHighlighted  : ''}
+        ${!isActive && !isHighlighted ? styles.cellDim : ''}
+      `}
+      style={{ '--prof-width': `${skill.level}%` }}
+      onMouseEnter={() => onHover(skill.name)}
+      onMouseLeave={onLeave}
+      data-skill={skill.name}
+      aria-label={`${skill.name}: ${skill.level}% — ${profLabel(skill.level)}`}
     >
-      {/* Atomic number — top left */}
       <span className={styles.atomic}>{skill.atomic}</span>
-
-      {/* Proficiency level — top right, appears on hover */}
-      <span className={`${styles.profLevel} ${hovered ? styles.profLevelVisible : ''}`}>
-        {skill.level}
-      </span>
-
-      {/* Symbol — the centrepiece */}
       <span className={styles.symbol}>{skill.symbol}</span>
-
-      {/* Full name */}
       <span className={styles.name}>{skill.name}</span>
-
-      {/* Proficiency label */}
       <span className={styles.profLabel}>{profLabel(skill.level)}</span>
-
-      {/* Thin proficiency bar at the bottom */}
       <div className={styles.profBar} aria-hidden="true">
         <div className={styles.profBarFill} />
       </div>
@@ -75,52 +80,160 @@ function SkillCell({ skill, delay = 0 }) {
 }
 
 /* ----------------------------------------------------------
+   Connection SVG overlay
+   Draws lines between active cell and its related cells
+   ---------------------------------------------------------- */
+function ConnectionLayer({ activeSkill, containerRef }) {
+  const svgRef         = useRef(null);
+  const prefersReduced = useReducedMotion();
+
+  useEffect(() => {
+    const svg       = svgRef.current;
+    const container = containerRef.current;
+    if (!svg || !container || !activeSkill || prefersReduced) {
+      if (svg) svg.innerHTML = '';
+      return;
+    }
+
+    const relations = RELATIONS[activeSkill] || [];
+    if (!relations.length) return;
+
+    /* Clear previous lines */
+    svg.innerHTML = '';
+
+    /* Size SVG to container */
+    const cRect = container.getBoundingClientRect();
+    svg.setAttribute('width',  cRect.width);
+    svg.setAttribute('height', cRect.height);
+
+    /* Find source cell center */
+    const srcEl = container.querySelector(`[data-skill="${CSS.escape(activeSkill)}"]`);
+    if (!srcEl) return;
+
+    const srcRect = srcEl.getBoundingClientRect();
+    const srcX    = srcRect.left - cRect.left + srcRect.width  / 2;
+    const srcY    = srcRect.top  - cRect.top  + srcRect.height / 2;
+
+    relations.forEach((relName, i) => {
+      const tgtEl = container.querySelector(`[data-skill="${CSS.escape(relName)}"]`);
+      if (!tgtEl) return;
+
+      const tgtRect = tgtEl.getBoundingClientRect();
+      const tgtX    = tgtRect.left - cRect.left + tgtRect.width  / 2;
+      const tgtY    = tgtRect.top  - cRect.top  + tgtRect.height / 2;
+
+      /* Create line */
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', srcX);
+      line.setAttribute('y1', srcY);
+      line.setAttribute('x2', tgtX);
+      line.setAttribute('y2', tgtY);
+      line.setAttribute('stroke',        '#8B5E3C');
+      line.setAttribute('stroke-width',  '0.5');
+      line.setAttribute('stroke-opacity', '0.5');
+      line.setAttribute('stroke-linecap', 'round');
+
+      /* Dash animation */
+      const len = Math.sqrt((tgtX-srcX)**2 + (tgtY-srcY)**2);
+      line.setAttribute('stroke-dasharray',  len);
+      line.setAttribute('stroke-dashoffset', len);
+
+      svg.appendChild(line);
+
+      /* Draw in with GSAP */
+      gsap.to(line, {
+        strokeDashoffset: 0,
+        duration:         0.4,
+        ease:             'power2.out',
+        delay:            i * 0.06,
+      });
+
+      /* Dot at target end */
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', tgtX);
+      dot.setAttribute('cy', tgtY);
+      dot.setAttribute('r',  '3');
+      dot.setAttribute('fill',         '#8B5E3C');
+      dot.setAttribute('fill-opacity', '0');
+      svg.appendChild(dot);
+
+      gsap.to(dot, {
+        fillOpacity: 0.6,
+        duration:    0.2,
+        ease:        'power2.out',
+        delay:       i * 0.06 + 0.35,
+      });
+    });
+
+    /* Fade out on cleanup */
+    return () => {
+      if (svg) {
+        gsap.to(Array.from(svg.children), {
+          opacity:  0,
+          duration: 0.15,
+          ease:     'power1.in',
+          onComplete: () => { if (svg) svg.innerHTML = ''; },
+        });
+      }
+    };
+  }, [activeSkill, containerRef, prefersReduced]);
+
+  return (
+    <svg
+      ref={svgRef}
+      className={styles.connectionLayer}
+      aria-hidden="true"
+      style={{ pointerEvents: 'none' }}
+    />
+  );
+}
+
+/* ----------------------------------------------------------
    Main component
    ---------------------------------------------------------- */
 export default function Skills() {
-  const prefersReduced = useReducedMotion();
-  const sectionRef     = useRef(null);
-  const rowRefs        = useRef([]);
+  const prefersReduced  = useReducedMotion();
+  const sectionRef      = useRef(null);
+  const tableRef        = useRef(null);
+  const rowRefs         = useRef([]);
+  const [activeSkill, setActiveSkill]   = useState(null);
+  const [anyHovered,  setAnyHovered]    = useState(false);
 
-  /* Stagger each category row on scroll */
+  const handleHover = useCallback((name) => {
+    setActiveSkill(name);
+    setAnyHovered(true);
+  }, []);
+
+  const handleLeave = useCallback(() => {
+    setActiveSkill(null);
+    setAnyHovered(false);
+  }, []);
+
+  /* Scroll reveal */
   useEffect(() => {
     const rows = rowRefs.current.filter(Boolean);
     if (!rows.length || prefersReduced) return;
 
     rows.forEach((row, i) => {
       const cells = row.querySelectorAll('[class*="cell"]');
-      gsap.fromTo(
-        cells,
+      gsap.fromTo(cells,
         { opacity: 0, y: 24, scale: 0.94 },
         {
-          opacity:  1,
-          y:        0,
-          scale:    1,
-          duration: 0.6,
-          ease:     'power3.out',
-          stagger:  0.05,
-          delay:    i * 0.08,
+          opacity: 1, y: 0, scale: 1,
+          duration: 0.6, ease: 'power3.out', stagger: 0.05, delay: i * 0.08,
           scrollTrigger: {
-            trigger:       sectionRef.current,
-            start:         'top 75%',
-            once:          true,
-            toggleActions: 'play none none none',
+            trigger: sectionRef.current, start: 'top 75%',
+            once: true, toggleActions: 'play none none none',
           },
         }
       );
     });
   }, [prefersReduced]);
 
-  /* Build flat atomic index offset per category */
-  let atomicOffset = 0;
+  const relations = activeSkill ? (RELATIONS[activeSkill] || []) : [];
 
   return (
-    <section
-      ref={sectionRef}
-      className={styles.skills}
-      id="skills"
-      aria-label="Skills"
-    >
+    <section ref={sectionRef} className={styles.skills} id="skills" aria-label="Skills">
       <div className={styles.inner}>
 
         <SectionLabel number="04" label="Skills" />
@@ -139,49 +252,56 @@ export default function Skills() {
             <span className={styles.legendBar} />
             <span className={styles.legendText}>Proficiency</span>
           </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendHint}>
+              Hover a cell to see connections
+            </span>
+          </div>
         </div>
 
-        {/* Category rows */}
-        <div className={styles.table}>
-          {skills.map((cat, ci) => {
-            const rowStart = atomicOffset;
-            atomicOffset += cat.items.length;
-
-            return (
-              <div
-                key={cat.category}
-                ref={el => rowRefs.current[ci] = el}
-                className={styles.row}
-              >
-                {/* Category label — left of the row */}
+        {/* Table — position relative so SVG overlay can cover it */}
+        <div ref={tableRef} className={styles.tableWrap}>
+          <div className={styles.table}>
+            {skills.map((cat, ci) => (
+              <div key={cat.category} ref={el => rowRefs.current[ci] = el} className={styles.row}>
                 <div className={styles.rowLabel}>
                   <span className={styles.rowCode}>{cat.categoryCode}</span>
                   <span className={styles.rowName}>{cat.category}</span>
                 </div>
-
-                {/* Skill cells */}
                 <div className={styles.cells}>
-                  {cat.items.map((skill, si) => (
-                    <SkillCell
-                      key={skill.name}
-                      skill={skill}
-                      delay={si * 0.04}
-                    />
-                  ))}
+                  {cat.items.map(skill => {
+                    const isActive      = skill.name === activeSkill;
+                    const isHighlighted = relations.includes(skill.name);
+                    const isDimmed      = anyHovered && !isActive && !isHighlighted;
+                    return (
+                      <SkillCell
+                        key={skill.name}
+                        skill={skill}
+                        onHover={handleHover}
+                        onLeave={handleLeave}
+                        isActive={isActive}
+                        isHighlighted={isHighlighted}
+                        isDimmed={isDimmed}
+                      />
+                    );
+                  })}
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          {/* SVG connection lines overlay */}
+          <ConnectionLayer
+            activeSkill={activeSkill}
+            containerRef={tableRef}
+          />
         </div>
 
-        {/* Bottom annotation */}
-        <div className={styles.footnote} aria-hidden="true">
+        <div className={styles.footnote}>
           <span className={styles.footnoteText}>
-            {skills.reduce((acc, cat) => acc + cat.items.length, 0)} elements identified ·
-            proficiency self-assessed
+            {allSkills.length} elements identified · proficiency self-assessed
           </span>
         </div>
-
       </div>
     </section>
   );

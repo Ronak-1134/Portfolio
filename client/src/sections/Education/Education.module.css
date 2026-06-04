@@ -1,306 +1,374 @@
 /* ============================================================
-   Education.module.css
-   Ronak Vaghela Portfolio — Education Section Styles
-
-   Aesthetic: a filled-in academic form found in a portfolio case.
-   Warm, precise, legible. Every cell considered.
+   Education.module.css — Official Document Style
    ============================================================ */
 
-/* ------------------------------------------------------------
-   SECTION
-   ------------------------------------------------------------ */
 .section {
   position:       relative;
-  background:     transparent;
   padding-top:    var(--section-padding);
   padding-bottom: var(--section-padding);
   z-index:        var(--z-base, 1);
 }
 
-/* ------------------------------------------------------------
-   LABEL ROW — section number + heading row
-   ------------------------------------------------------------ */
-.labelRow {
-  margin-bottom: var(--space-6, 24px);
+.inner {
+  width:     100%;
+  max-width: var(--max-width, 1200px);
+  margin:    0 auto;
+  padding:   0 var(--content-padding);
 }
 
-/* ------------------------------------------------------------
-   HEADING
-   ------------------------------------------------------------ */
-.heading {
-  font-family:    var(--font-display, 'Cormorant Garamond', serif);
-  font-size:      var(--text-2xl, clamp(2.5rem, 1.5rem + 4vw, 4.5rem));
-  font-weight:    300;
-  line-height:    var(--leading-display, 1.1);
-  letter-spacing: var(--tracking-tight, -0.02em);
-  color:          var(--color-ink-primary, #2C2416);
-  margin-bottom:  var(--space-12, 48px);
-}
-
-/* ------------------------------------------------------------
-   RULER
-   SVG ruler sits above the table, spans its full width.
-   The scaleX reveal animation is applied via GSAP.
-   ------------------------------------------------------------ */
-.rulerWrapper {
-  width:         100%;
-  margin-bottom: 0;  /* Ruler bottom edge becomes table top edge */
-  transform-origin: left center;
+/* ============================================================
+   DOCUMENT CONTAINER
+   The whole thing looks like a filed form.
+   ============================================================ */
+.document {
+  position:   relative;
+  border:     0.5px solid var(--color-stroke, #C4B89A);
+  background: var(--color-surface, #EDE8DC);
+  overflow:   hidden;
   /* GSAP initial state */
-  opacity:       0;
-  will-change:   transform, opacity;
+  opacity:    0;
 }
 
-.ruler {
-  display: block;
-  width:   100%;
-  height:  28px;
-  overflow: visible;
+/* ============================================================
+   DOCUMENT HEADER
+   ============================================================ */
+.docHeader {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     flex-start;
+  padding:         var(--space-6, 24px) var(--space-8, 32px);
+  gap:             var(--space-8, 32px);
 }
 
-/* ------------------------------------------------------------
-   TABLE WRAPPER
-   Allows horizontal scroll on narrow viewports without
-   breaking the page layout.
-   ------------------------------------------------------------ */
-.tableWrapper {
-  width:    100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+.docHeaderLeft {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-5, 20px);
 }
 
-/* ------------------------------------------------------------
+/* Circular seal */
+.seal {
+  width:           52px;
+  height:          52px;
+  border:          0.5px solid var(--color-stroke-dark, #8B5E3C);
+  border-radius:   50%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  position:        relative;
+}
+
+/* Outer ring tick marks — blueprint detail */
+.seal::before {
+  content:       '';
+  position:      absolute;
+  inset:         -4px;
+  border:        0.5px dashed var(--color-stroke, #C4B89A);
+  border-radius: 50%;
+}
+
+.sealInner {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      1.1rem;
+  font-weight:    300;
+  color:          var(--color-accent, #8B5E3C);
+  letter-spacing: -0.02em;
+}
+
+.docHeaderMeta {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-1, 4px);
+}
+
+.docTitle {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      var(--text-xl, clamp(1.75rem, 1.2rem + 2vw, 2.5rem));
+  font-weight:    300;
+  letter-spacing: -0.02em;
+  color:          var(--color-ink-primary, #2C2416);
+  line-height:    1;
+}
+
+.docSubtitle {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+/* Right side fields */
+.docHeaderRight {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-3, 12px);
+  align-items:    flex-end;
+  text-align:     right;
+}
+
+.docField {
+  display:        flex;
+  flex-direction: column;
+  gap:            2px;
+}
+
+.docFieldLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.52rem;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+.docFieldValue {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  letter-spacing: 0.06em;
+  color:          var(--color-ink-secondary, #7A6E5F);
+}
+
+/* Horizontal rule inside doc */
+.docRule {
+  width:      100%;
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+}
+
+/* ============================================================
+   CANDIDATE ROW
+   ============================================================ */
+.candidateRow {
+  display:               grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:                   0;
+  padding:               var(--space-5, 20px) var(--space-8, 32px);
+}
+
+.candidateField {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--space-2, 8px);
+  padding-right:  var(--space-6, 24px);
+  border-right:   0.5px solid var(--color-stroke, #C4B89A);
+  padding-left:   var(--space-6, 24px);
+}
+
+.candidateField:first-child { padding-left: 0; }
+.candidateField:last-child  { border-right: none; }
+
+.candidateName {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      var(--text-lg, clamp(1.25rem, 1rem + 1vw, 1.75rem));
+  font-weight:    300;
+  letter-spacing: -0.01em;
+  color:          var(--color-ink-primary, #2C2416);
+  font-style:     italic;
+}
+
+.candidateValue {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size:   var(--text-sm, 0.875rem);
+  font-weight: 300;
+  color:       var(--color-ink-primary, #2C2416);
+}
+
+.statusBadge {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-2, 8px);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:   var(--text-xs, 0.65rem);
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:       var(--color-ink-secondary, #7A6E5F);
+}
+
+.statusDot {
+  display:       block;
+  width:         5px;
+  height:        5px;
+  border-radius: 50%;
+  background:    var(--color-accent, #8B5E3C);
+  flex-shrink:   0;
+  animation:     pulse-dot 2.6s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1;    transform: scale(1);    }
+  50%       { opacity: 0.3; transform: scale(0.72); }
+}
+
+/* ============================================================
    TABLE
-   border-collapse: collapse — all 0.5px borders meet cleanly.
-   width: 100% — fills the wrapper.
-   ------------------------------------------------------------ */
+   ============================================================ */
 .table {
   width:           100%;
   border-collapse: collapse;
   border-spacing:  0;
-  table-layout:    fixed;
-}
-
-/* ------------------------------------------------------------
-   HEADER ROW
-   JetBrains Mono, all-caps, tracked — blueprint column labels.
-   ------------------------------------------------------------ */
-.headerRow {
-  border-bottom: 0.5px solid var(--color-stroke, #C4B89A);
 }
 
 .th {
   font-family:    var(--font-mono, 'JetBrains Mono', monospace);
-  font-size:      var(--text-xs, 0.65rem);
+  font-size:      0.55rem;
   font-weight:    400;
-  letter-spacing: var(--tracking-wide, 0.15em);
+  letter-spacing: var(--tracking-mono, 0.12em);
   text-transform: uppercase;
   color:          var(--color-ink-ghost, #B5AA96);
-  padding:        var(--space-4, 16px) var(--space-4, 16px);
+  padding:        var(--space-3, 12px) var(--space-5, 20px) var(--space-3, 12px) var(--space-8, 32px);
+  border-bottom:  0.5px solid var(--color-stroke, #C4B89A);
   text-align:     left;
-  white-space:    nowrap;
-  border-top:     0.5px solid var(--color-stroke, #C4B89A);
-  border-right:   0.5px solid var(--color-stroke, #C4B89A);
+  background:     var(--color-bg, #F5F0E8);
 }
-
-.th:first-child {
-  border-left: 0.5px solid var(--color-stroke, #C4B89A);
-}
-
-/* Column widths */
-.table colgroup col:nth-child(1) { width: 22%; }  /* Examination */
-.table colgroup col:nth-child(2) { width: 10%; }  /* Board       */
-.table colgroup col:nth-child(3) { width: 38%; }  /* Institution */
-.table colgroup col:nth-child(4) { width: 12%; }  /* Year        */
-.table colgroup col:nth-child(5) { width: 18%; }  /* Result      */
 
 .thCenter { text-align: center; }
-.thRight  { text-align: right;  }
+.thRight  { text-align: right; padding-right: var(--space-8, 32px); }
 
-/* ------------------------------------------------------------
-   TABLE ROWS
-   Each row has a bottom border. The B.E row (featured) has
-   a slightly more prominent appearance — the current degree.
-   ------------------------------------------------------------ */
 .row {
   border-bottom: 0.5px solid var(--color-stroke, #C4B89A);
-  /* GSAP initial state */
-  opacity:    0;
-  will-change: transform, opacity;
-  transition:  background-color var(--duration-fast, 160ms) var(--ease-hover);
+  opacity:       0; /* GSAP */
+  transition:    background var(--duration-fast, 160ms) ease;
 }
 
-.row:hover {
-  background-color: var(--color-surface, #EDE8DC);
-}
+.row:last-child { border-bottom: none; }
+.row:hover      { background: var(--color-bg, #F5F0E8); }
 
-/* B.E row — featured, current degree */
-.rowFeatured {
-  background-color: var(--color-accent-faint, rgba(139, 94, 60, 0.07));
-}
+/* B.E row — featured (first in array) */
+.rowFeatured { background: rgba(139, 94, 60, 0.04); }
+.rowFeatured:hover { background: rgba(139, 94, 60, 0.07); }
 
-.rowFeatured:hover {
-  background-color: var(--color-surface-hover, #E5DFD0);
-}
-
-/* ------------------------------------------------------------
-   TABLE CELLS
-   ------------------------------------------------------------ */
 .td {
-  padding:     var(--space-5, 20px) var(--space-4, 16px);
+  padding:        var(--space-5, 20px) var(--space-5, 20px) var(--space-5, 20px) var(--space-8, 32px);
   vertical-align: middle;
-  border-right: 0.5px solid var(--color-stroke, #C4B89A);
-}
-
-.td:first-child {
-  border-left: 0.5px solid var(--color-stroke, #C4B89A);
 }
 
 .tdCenter { text-align: center; }
-.tdRight  { text-align: right;  }
+.tdRight  { text-align: right; padding-right: var(--space-8, 32px); }
 
-/* ------------------------------------------------------------
-   CELL CONTENT STYLES
-   ------------------------------------------------------------ */
-
-/* Examination name — DM Sans, body weight */
 .examinationName {
-  display:     block;
   font-family: var(--font-body, 'DM Sans', sans-serif);
-  font-size:   var(--text-sm, 0.75rem);
-  font-weight: 400;
+  font-size:   var(--text-base, 1rem);
+  font-weight: 300;
   color:       var(--color-ink-primary, #2C2416);
-  line-height: 1.3;
 }
 
-/* Board — mono, tracked, muted */
 .boardName {
-  display:        block;
   font-family:    var(--font-mono, 'JetBrains Mono', monospace);
   font-size:      var(--text-xs, 0.65rem);
-  font-weight:    400;
-  letter-spacing: var(--tracking-mono, 0.12em);
-  text-transform: uppercase;
-  color:          var(--color-ink-secondary, #7A6E5F);
+  letter-spacing: 0.08em;
+  color:          var(--color-ink-ghost, #B5AA96);
 }
 
-/* Institution — Cormorant italic, the most elegant cell */
 .institutionName {
-  display:     block;
   font-family: var(--font-display, 'Cormorant Garamond', serif);
-  font-size:   var(--text-md, clamp(1rem, 0.9rem + 0.45vw, 1.125rem));
+  font-size:   var(--text-md, 1.1rem);
   font-weight: 300;
   font-style:  italic;
   color:       var(--color-ink-primary, #2C2416);
-  line-height: 1.2;
+  display:     block;
 }
 
-/* Location — mono, ghost ink, below institution name */
-.institutionLocation {
-  display:        block;
-  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
-  font-size:      0.6rem;
-  font-weight:    400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color:          var(--color-ink-ghost, #B5AA96);
-  margin-top:     3px;
-}
-
-/* Year — JetBrains Mono, centered */
 .yearValue {
-  display:        block;
   font-family:    var(--font-mono, 'JetBrains Mono', monospace);
-  font-size:      var(--text-sm, 0.75rem);
-  font-weight:    400;
-  letter-spacing: var(--tracking-mono, 0.12em);
+  font-size:      var(--text-xs, 0.65rem);
+  letter-spacing: 0.08em;
   color:          var(--color-ink-secondary, #7A6E5F);
 }
 
-/* Result — mono, right-aligned, primary ink */
 .resultValue {
-  display:        block;
-  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
-  font-size:      var(--text-sm, 0.75rem);
-  font-weight:    400;
-  letter-spacing: var(--tracking-mono, 0.12em);
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      var(--text-lg, 1.5rem);
+  font-weight:    300;
   color:          var(--color-ink-primary, #2C2416);
+  letter-spacing: -0.01em;
+  display:        flex;
+  align-items:    baseline;
+  justify-content: flex-end;
+  gap:            3px;
 }
 
-/* The % or CGPA suffix — ghost ink, smaller */
 .resultType {
-  font-size:      0.6rem;
-  letter-spacing: 0.08em;
-  color:          var(--color-ink-ghost, #B5AA96);
-  margin-left:    2px;
-}
-
-/* ------------------------------------------------------------
-   FOOTNOTE
-   ------------------------------------------------------------ */
-.footnote {
-  margin-top:  var(--space-4, 16px);
-  padding-top: var(--space-3, 12px);
-}
-
-.footnoteText {
   font-family:    var(--font-mono, 'JetBrains Mono', monospace);
-  font-size:      var(--text-xs, 0.65rem);
-  font-weight:    400;
+  font-size:      0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+}
+
+/* ============================================================
+   DOCUMENT FOOTER
+   ============================================================ */
+.docFooter {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  padding:         var(--space-4, 16px) var(--space-8, 32px);
+  border-top:      0.5px solid var(--color-stroke, #C4B89A);
+  background:      var(--color-bg, #F5F0E8);
+}
+
+.docFooterNote {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.55rem;
   letter-spacing: var(--tracking-mono, 0.12em);
   color:          var(--color-ink-ghost, #B5AA96);
 }
 
-/* ------------------------------------------------------------
-   RESPONSIVE — MOBILE
-   On narrow screens, simplify the table: hide Board column,
-   stack institution + location.
-   ------------------------------------------------------------ */
-@media (max-width: 640px) {
-  .th,
-  .td {
-    padding: var(--space-3, 12px) var(--space-3, 12px);
-  }
-
-  /* Hide Board column on mobile */
-  .th:nth-child(2),
-  .td:nth-child(2) {
-    display: none;
-  }
-
-  .institutionName {
-    font-size: var(--text-base, clamp(0.875rem, 0.8rem + 0.35vw, 1rem));
-  }
-
-  .heading {
-    font-size: var(--text-xl, clamp(1.75rem, 1.2rem + 2vw, 2.5rem));
-  }
+.docFooterStamp {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.55rem;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  opacity:        0.6;
 }
 
-/* ------------------------------------------------------------
-   REDUCED MOTION
-   ------------------------------------------------------------ */
+/* ============================================================
+   WATERMARK
+   Large ghost text behind the table content
+   ============================================================ */
+.watermark {
+  position:       absolute;
+  top:            50%;
+  left:           50%;
+  transform:      translate(-50%, -50%) rotate(-25deg);
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      clamp(2rem, 8vw, 6rem);
+  font-weight:    300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  -webkit-text-stroke: 0.5px var(--color-stroke, #C4B89A);
+  color:          transparent;
+  pointer-events: none;
+  user-select:    none;
+  white-space:    nowrap;
+  opacity:        0.4;
+  z-index:        0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .docHeader        { flex-direction: column; gap: var(--space-5, 20px); }
+  .docHeaderRight   { align-items: flex-start; text-align: left; }
+  .candidateRow     { grid-template-columns: 1fr; gap: var(--space-4, 16px); }
+  .candidateField   { border-right: none; border-bottom: 0.5px solid var(--color-stroke, #C4B89A); padding-left: 0; padding-bottom: var(--space-4, 16px); }
+  .candidateField:last-child { border-bottom: none; }
+  .th, .td          { padding-left: var(--space-4, 16px); }
+  .thRight, .tdRight { padding-right: var(--space-4, 16px); }
+  .docFooter        { flex-direction: column; gap: var(--space-2, 8px); align-items: flex-start; }
+  .watermark        { font-size: clamp(1.2rem, 5vw, 3rem); }
+}
+
+@media (max-width: 500px) {
+  .table            { display: block; overflow-x: auto; }
+}
+
+/* ---- REDUCED MOTION ---- */
 @media (prefers-reduced-motion: reduce) {
-  .rulerWrapper,
-  .row {
-    opacity:   1 !important;
-    transform: none !important;
-  }
-
-  .row {
-    transition: none;
-  }
-}
-
-/* ------------------------------------------------------------
-   PRINT
-   ------------------------------------------------------------ */
-@media print {
-  .table {
-    font-size: 0.75rem;
-  }
-
-  .row:hover {
-    background: none;
-  }
+  .document { opacity: 1; transform: none; }
+  .row      { opacity: 1; }
+  .statusDot { animation: none; }
 }

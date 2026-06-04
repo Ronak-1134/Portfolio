@@ -51,7 +51,7 @@ export const projects = [
     ],
     links: {
       github: 'https://github.com/Ronak-1134/CodeSense-AI',
-      live:   null,
+      live:   'https://code-sense-ai-sigma.vercel.app',
     },
     highlight: 'Claude AI + GitHub PR Integration + Firebase',
   },

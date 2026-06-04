@@ -12,6 +12,11 @@
   flex-direction: column;
   gap:            0;
   opacity:        0; /* GSAP reveals */
+
+  /* Tilt: GPU layer + preserve 3D children */
+  will-change:      transform;
+  transform-style:  preserve-3d;
+
   transition:
     background    var(--duration-base, 240ms) var(--ease-hover),
     border-color  var(--duration-base, 240ms) var(--ease-hover),
@@ -199,4 +204,20 @@
   .card { opacity: 1; transition: none; }
   .corner { transition: none; }
   .annotationArrow { transition: none; }
+}
+
+@media (max-width: 768px) {
+  .card {
+    /* Cards have fixed height from slot — ensure flex works */
+    height:  100%;
+    opacity: 1; /* GSAP may not run on mobile — show by default */
+  }
+
+  .cardDesc {
+    -webkit-line-clamp: 4;
+  }
+
+  .cardTitle {
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+  }
 }

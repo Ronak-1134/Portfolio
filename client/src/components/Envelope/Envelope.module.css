@@ -1,0 +1,116 @@
+/* ============================================================
+   Envelope.module.css
+   ============================================================ */
+
+.wrap {
+  display:        flex;
+  flex-direction: column;
+  align-items:    flex-start;
+  gap:            var(--space-5, 20px);
+  padding:        var(--space-10, 40px) var(--space-8, 32px);
+  min-height:     320px;
+  justify-content: center;
+}
+
+/* ---- ENVELOPE SVG STACK ---- */
+.envelopeWrap {
+  position: relative;
+  width:    200px;
+}
+
+.envBody {
+  display: block;
+  width:   200px;
+}
+
+/* Flap sits at the top of the body, hinges from its top edge */
+.envFlap {
+  position:         absolute;
+  top:              0;
+  left:             0;
+  width:            200px;
+  transform-origin: top center;
+  /* GSAP sets rotateX — starts folded up (-90deg), folds down to 0 */
+}
+
+/* Wax seal — centred on the flap/body join */
+.seal {
+  position:        absolute;
+  top:             26px;   /* sits at the fold point */
+  left:            50%;
+  transform:       translateX(-50%);
+  width:           32px;
+  height:          32px;
+  border-radius:   50%;
+  background:      var(--color-accent, #8B5E3C);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  /* GSAP scales from 0 */
+}
+
+.sealInner {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      0.7rem;
+  font-weight:    300;
+  color:          var(--color-bg, #F5F0E8);
+  letter-spacing: -0.02em;
+  line-height:    1;
+  margin-top:     1px;
+}
+
+/* ---- TEXT ---- */
+.receivedWord {
+  font-family:    var(--font-display, 'Cormorant Garamond', serif);
+  font-size:      var(--text-2xl, clamp(2.5rem, 1.5rem + 4vw, 4.5rem));
+  font-weight:    300;
+  line-height:    1.1;
+  letter-spacing: -0.02em;
+  color:          var(--color-ink-primary, #2C2416);
+  margin:         0;
+}
+
+.receivedNote {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size:   var(--text-base, 1rem);
+  font-weight: 300;
+  color:       var(--color-ink-secondary, #7A6E5F);
+  margin:      0;
+}
+
+.sendAnother {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      var(--text-xs, 0.65rem);
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  background:     transparent;
+  border:         none;
+  cursor:         none;
+  padding:        0;
+  transition:     color var(--duration-base, 240ms) ease;
+  margin-top:     var(--space-2, 8px);
+}
+
+.sendAnother:hover { color: var(--color-ink-secondary, #7A6E5F); }
+
+@media (max-width: 600px) {
+  .wrap {
+    padding:    var(--space-6, 24px) var(--space-5, 20px);
+    min-height: 260px;
+  }
+
+  .envelopeWrap { width: 160px; }
+  .envBody      { width: 160px; }
+  .envFlap      { width: 160px; }
+
+  .seal {
+    width:  26px;
+    height: 26px;
+    top:    21px;
+  }
+
+  .sealInner { font-size: 0.6rem; }
+
+  .receivedWord { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+}

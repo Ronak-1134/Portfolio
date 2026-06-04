@@ -104,8 +104,9 @@
   opacity:        0; /* GSAP */
   position:       relative;
   z-index:        2;
-  /* Allow the second line to indent — creates asymmetry */
   white-space:    nowrap;
+  will-change:    transform, opacity;
+  transform-origin: left center;
 }
 
 /* Outline ghost name — sits behind, offset down-right */
@@ -194,6 +195,80 @@
   border:         0.5px solid var(--color-stroke, #C4B89A);
   background:     var(--color-accent-faint, rgba(139,94,60,0.07));
   line-height:    1.8;
+}
+
+/* ============================================================
+   CURRENTLY BLOCK
+   ============================================================ */
+.currently {
+  display:        flex;
+  flex-direction: column;
+  border:         0.5px solid var(--color-stroke, #C4B89A);
+  background:     var(--color-surface, #EDE8DC);
+}
+
+.currentlyRow {
+  display:       flex;
+  align-items:   center;
+  gap:           var(--space-3, 12px);
+  padding:       var(--space-3, 12px) var(--space-4, 16px);
+  border-bottom: 0.5px solid var(--color-stroke, #C4B89A);
+  transition:    background var(--duration-fast, 160ms) ease;
+}
+
+.currentlyRow:last-child { border-bottom: none; }
+.currentlyRow:hover { background: var(--color-surface-hover, #E5DFD0); }
+
+.currentlyLabel {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.55rem;
+  letter-spacing: var(--tracking-mono, 0.12em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  width:          80px;
+  flex-shrink:    0;
+}
+
+.currentlyDash {
+  display:    block;
+  width:      16px;
+  height:     0.5px;
+  background: var(--color-stroke, #C4B89A);
+  flex-shrink: 0;
+}
+
+.currentlyValue {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size:   var(--text-sm, 0.875rem);
+  font-weight: 300;
+  color:       var(--color-ink-primary, #2C2416);
+}
+
+.currentlyLink {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--space-2, 8px);
+  text-decoration: none;
+  color:           var(--color-ink-primary, #2C2416);
+  transition:      color var(--duration-fast, 160ms) ease;
+}
+
+.currentlyLink:hover { color: var(--color-ink-secondary, #7A6E5F); }
+
+.currentlyRepo {
+  font-size: 0.75rem;
+  color:     var(--color-ink-ghost, #B5AA96);
+}
+
+.currentlyArrow {
+  font-size:  0.7rem;
+  color:      var(--color-ink-ghost, #B5AA96);
+  transition: transform var(--duration-fast, 160ms) ease, color var(--duration-fast, 160ms) ease;
+}
+
+.currentlyLink:hover .currentlyArrow {
+  transform: translate(2px, -2px);
+  color:     var(--color-ink-secondary, #7A6E5F);
 }
 
 /* Stats row — CGPA + internships */
@@ -448,33 +523,65 @@
     gap:                   var(--space-8, 32px);
   }
 
-  .rightCol {
-    order: -1;
-  }
+  .rightCol { order: -1; }
 
   .photo,
-  .photoFallback {
-    height: 340px;
-  }
+  .photoFallback { height: 280px; }
 
-  .statsRow {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  .statsRow { grid-template-columns: repeat(3, 1fr); }
 
-  .topMeta {
-    display: none;
-  }
+  .topMeta { display: none; }
 }
 
 @media (max-width: 600px) {
-  .statsRow {
-    grid-template-columns: 1fr 1fr;
+  .hero {
+    padding-top: calc(var(--nav-height, 56px) + var(--space-6, 24px));
   }
+
+  /* Name fits mobile without overflow */
+  .nameBlock {
+    width:     100%;
+    left:      auto;
+    transform: none;
+    padding:   0;
+  }
+
+  .heroName,
+  .heroNameOutline {
+    font-size:      clamp(2.8rem, 14vw, 5rem);
+    white-space:    normal;
+    word-break:     break-word;
+    letter-spacing: -0.03em;
+  }
+
+  .heroNameOutline {
+    top:  0.1em;
+    left: 0.05em;
+  }
+
+  .heroBody { gap: var(--space-6, 24px); }
+
+  .photo,
+  .photoFallback { height: 220px; }
+
+  .statsRow {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-1, 4px);
+  }
+
+  .statValue { font-size: clamp(1.2rem, 5vw, 1.75rem); }
 
   .ctaRow {
     flex-direction: column;
-    align-items: flex-start;
+    align-items:    flex-start;
+    gap:            var(--space-3, 12px);
   }
+
+  .currently { font-size: 0.85em; }
+
+  .currentlyLabel { width: 68px; }
+
+  .scrollNudge { margin-top: var(--space-6, 24px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

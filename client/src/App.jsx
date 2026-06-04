@@ -1,7 +1,3 @@
-/* ============================================================
-   App.jsx — Ronak Vaghela Portfolio
-   ============================================================ */
-
 import { useState, useEffect, useCallback } from 'react';
 import { registerGSAP }   from './utils/gsapConfig';
 import { CursorProvider } from './hooks/useCursor.jsx';
@@ -29,7 +25,6 @@ const SKIP_LOADER =
   import.meta.env.DEV &&
   import.meta.env.VITE_SKIP_LOADER === 'true';
 
-/* Inter-section ruled divider with a large ghost number */
 function SectionDivider({ index }) {
   return (
     <div className="app-divider" aria-hidden="true">
@@ -58,15 +53,12 @@ export default function App() {
 
       {!loaderDone && <Loader onComplete={handleLoaderComplete} />}
 
-      <div
-        style={{
-          opacity:       loaderDone ? 1 : 0,
-          transition:    loaderDone ? 'opacity 0.4s ease' : 'none',
-          pointerEvents: loaderDone ? 'auto' : 'none',
-        }}
-      >
+      <div style={{
+        opacity:       loaderDone ? 1 : 0,
+        transition:    loaderDone ? 'opacity 0.4s ease' : 'none',
+        pointerEvents: loaderDone ? 'auto' : 'none',
+      }}>
         <Nav />
-
         <main id="main-content" role="main">
           <Hero />
           <Marquee speed={36} />
@@ -77,21 +69,8 @@ export default function App() {
           <SectionDivider index={3} />
           <Projects />
           <Marquee
-            speed={28}
-            size="md"
-            items={[
-              'Govt-Doc-Vault',
-              'Task Manager',
-              'Gaming Website',
-              'Portfolio',
-              'React',
-              'Node.js',
-              'GSAP',
-              'Firebase',
-              'MongoDB',
-              'PostgreSQL',
-            ]}
-            separator="—"
+            speed={28} size="md" separator="—"
+            items={['Govt-Doc-Vault','Task Manager','Gaming Website','Portfolio','Auth System','Data Dashboard','React','Node.js','GSAP','Firebase','MongoDB','PostgreSQL']}
           />
           <SectionDivider index={4} />
           <Skills />
@@ -99,7 +78,6 @@ export default function App() {
           <Contact />
         </main>
       </div>
-
     </CursorProvider>
   );
 }

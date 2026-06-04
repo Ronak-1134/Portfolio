@@ -2,7 +2,7 @@
    Hero.jsx — Ronak Vaghela Portfolio (rebuilt for density)
    ============================================================ */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap }              from '../../utils/gsapConfig';
 import { useReducedMotion }  from '../../hooks/useReducedMotion';
 import Button                from '../../components/ui/Button';
@@ -19,8 +19,46 @@ const STATS = [
   { target: 300,   decimals: 0, suffix: '+',  label: 'Problems solved',   duration: 1800 },
 ];
 
+const CURRENTLY = [
+  { label: 'Building',  value: 'This portfolio'                    },
+  { label: 'Reading',   value: 'Designing Data-Intensive Apps'      },
+  { label: 'Learning',  value: 'AI Agents & Multiagent Systems'     },
+];
+
+const GITHUB_USER = 'ronakvaghela';
+
+function useLastCommit() {
+  const [data, setData] = useState({ time: null, repo: null, loading: true });
+
+  useEffect(() => {
+    fetch(`https://api.github.com/users/${GITHUB_USER}/events/public?per_page=10`)
+      .then(r => r.json())
+      .then(events => {
+        const push = events.find(e => e.type === 'PushEvent');
+        if (!push) return setData({ time: null, repo: null, loading: false });
+
+        const ago  = getTimeAgo(new Date(push.created_at));
+        const repo = push.repo.name.replace(`${GITHUB_USER}/`, '');
+        setData({ time: ago, repo, loading: false });
+      })
+      .catch(() => setData({ time: null, repo: null, loading: false }));
+  }, []);
+
+  return data;
+}
+
+function getTimeAgo(date) {
+  const mins = Math.floor((Date.now() - date) / 60000);
+  if (mins < 60)  return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs  < 24)  return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+
 export default function Hero() {
   const prefersReduced = useReducedMotion();
+  const commit = useLastCommit();
 
   const sectionRef      = useRef(null);
   const nameRef         = useRef(null);
@@ -122,7 +160,7 @@ export default function Hero() {
             Ronak Vaghela
           </h1>
           {/* Solid name — the primary layer */}
-          <h1 ref={nameRef} className={styles.heroName}>
+          <h1 ref={nameRef} className={styles.heroName} data-hero-name>
             Ronak Vaghela
           </h1>
         </div>
@@ -142,7 +180,43 @@ export default function Hero() {
 
             <p className={styles.eduSummary}>{EDUCATION_SUMMARY}</p>
 
-            {/* Stats */}
+            {/* Currently block */}
+            <div className={styles.currently}>
+              {CURRENTLY.map(item => (
+                <div key={item.label} className={styles.currentlyRow}>
+                  <span className={styles.currentlyLabel}>{item.label}</span>
+                  <span className={styles.currentlyDash} aria-hidden="true" />
+                  <span className={styles.currentlyValue}>{item.value}</span>
+                </div>
+              ))}
+              {/* Live GitHub commit */}
+              <div className={styles.currentlyRow}>
+                <span className={styles.currentlyLabel}>Last commit</span>
+                <span className={styles.currentlyDash} aria-hidden="true" />
+                {commit.loading ? (
+                  <span className={styles.currentlyValue} style={{ opacity: 0.4 }}>
+                    fetching…
+                  </span>
+                ) : commit.time ? (
+                  <a
+                    href={`https://github.com/${GITHUB_USER}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${styles.currentlyValue} ${styles.currentlyLink}`}
+                  >
+                    {commit.time}
+                    {commit.repo && (
+                      <span className={styles.currentlyRepo}> · {commit.repo}</span>
+                    )}
+                    <span className={styles.currentlyArrow}>↗</span>
+                  </a>
+                ) : (
+                  <span className={styles.currentlyValue} style={{ opacity: 0.4 }}>
+                    —
+                  </span>
+                )}
+              </div>
+            </div>
             <div className={styles.statsRow}>
               {STATS.map(s => (
                 <div key={s.label} className={styles.statItem}>

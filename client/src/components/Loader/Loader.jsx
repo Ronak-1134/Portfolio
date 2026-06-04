@@ -1,389 +1,203 @@
 /* ============================================================
-   Loader.jsx
-   Ronak Vaghela Portfolio — Opening Canvas Animation
+   Loader.jsx — RV Signature Animation
+   Ronak Vaghela Portfolio
 
-   The first thing anyone sees. It must be perfect.
+   A single SVG path traces the "RV" monogram stroke by stroke
+   like watching someone sign their name in real time.
+   Then the full name fades in beneath it.
+   Then the overlay dissolves to reveal the page.
 
-   Sequence (2.8 seconds total):
-     0.00s  — Canvas fills screen. Single point at center.
-     0.00s  — Grid lines begin drawing outward from center.
-              Horizontal lines first, then vertical.
-              Each line extends symmetrically left/right or up/down.
-     1.60s  — Grid fully covers screen.
-     1.70s  — "RONAK VAGHELA" strokes in left to right.
-              SVG text with stroke-dashoffset animation.
-     2.40s  — Name fully drawn. Brief pause.
-     2.60s  — Canvas fades out, page reveals beneath.
-     2.80s  — onComplete() fires. Component unmounts.
+   Sequence:
+     0.00s  Cream screen. Silence.
+     0.20s  R stroke begins drawing (stroke-dashoffset)
+     1.00s  R complete. Brief pause.
+     1.20s  V stroke begins drawing
+     1.90s  V complete. Full "RV" visible.
+     2.10s  "RONAK VAGHELA" fades in below
+     2.50s  Everything held for a moment
+     2.70s  Overlay fades out → page reveals
+     2.90s  onComplete fires, component unmounts
 
-   Click anywhere to skip the entire sequence.
-   rAF loop only — zero GSAP, zero CSS animation in canvas.
+   Click anywhere to skip.
    ============================================================ */
 
 import { useEffect, useRef, useCallback } from 'react';
-import styles from './Loader.module.css';
+import { gsap }    from '../../utils/gsapConfig';
+import styles      from './Loader.module.css';
 
-/* ------------------------------------------------------------
-   TIMING CONSTANTS (ms)
-   Adjust these to tune the feel without touching logic.
-   ------------------------------------------------------------ */
-const T_GRID_START    =    0;   /* grid lines begin drawing      */
-const T_GRID_END      = 1600;   /* grid fully covers screen      */
-const T_NAME_START    = 1700;   /* name stroke begins            */
-const T_NAME_END      = 2400;   /* name fully drawn              */
-const T_PAUSE_END     = 2550;   /* brief hold before exit        */
-const T_EXIT_START    = 2550;   /* canvas fade begins            */
-const T_TOTAL         = 2800;   /* onComplete fires              */
+/* ---- SVG path data for the RV monogram ----
+   Hand-crafted paths that feel like a signature stroke.
+   R: a single continuous path — vertical stem + bowl + leg
+   V: two diagonal strokes meeting at a point
+   ViewBox: 0 0 200 120
+   ------------------------------------------ */
+const RV_PATHS = {
+  /* R — stem down, loop right, diagonal leg */
+  R: 'M 20,15 L 20,95 M 20,15 C 20,15 60,15 60,42 C 60,68 20,68 20,68 M 20,68 L 58,95',
+  /* V — left diagonal down to point, right diagonal back up */
+  V: 'M 82,15 L 116,95 L 150,15',
+};
 
-/* ------------------------------------------------------------
-   VISUAL CONSTANTS
-   ------------------------------------------------------------ */
-const CELL_SIZE       = 24;     /* px — matches GridBackground   */
-const LINE_COLOR      = 'rgba(196, 184, 154, 0.55)';   /* --color-stroke */
-const MAJOR_COLOR     = 'rgba(196, 184, 154, 0.85)';   /* major lines    */
-const BG_COLOR        = '#F5F0E8';  /* --color-bg                */
-const NAME_COLOR      = '#2C2416';  /* --color-ink-primary        */
-const NAME_FONT       = '"Cormorant Garamond", Georgia, serif';
+/* Total path lengths (approximate — GSAP measures exactly at runtime) */
+const PATH_LENGTH = { R: 220, V: 130 };
 
-/* ------------------------------------------------------------
-   EASING FUNCTIONS
-   Pure math — no library dependency.
-   ------------------------------------------------------------ */
-function easeOutQuart(t) {
-  return 1 - Math.pow(1 - t, 4);
-}
+/* Timing (ms) */
+const T = {
+  R_START:    200,
+  R_END:     1000,
+  V_START:   1150,
+  V_END:     1900,
+  NAME_IN:   2050,
+  HOLD_END:  2550,
+  EXIT:      2650,
+  COMPLETE:  2900,
+};
 
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
-function easeInOutCubic(t) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-}
-
-/* ============================================================
-   COMPONENT
-   ============================================================ */
 export default function Loader({ onComplete }) {
-  const canvasRef  = useRef(null);
-  const rafRef     = useRef(null);
-  const startRef   = useRef(null);
-  const exitedRef  = useRef(false);
-  const wrapperRef = useRef(null);
+  const wrapperRef  = useRef(null);
+  const rPathRef    = useRef(null);
+  const vPathRef    = useRef(null);
+  const nameRef     = useRef(null);
+  const dotRef      = useRef(null);
+  const exitedRef   = useRef(false);
+  const tlRef       = useRef(null);
 
-  /* ----------------------------------------------------------
-     SKIP — called on click or when T_TOTAL is reached.
-     Triggers the CSS fade-out class, then fires onComplete.
-     ---------------------------------------------------------- */
+  /* ---- Exit: fade wrapper out, fire onComplete ---- */
   const handleExit = useCallback(() => {
     if (exitedRef.current) return;
     exitedRef.current = true;
 
-    /* Cancel the rAF loop */
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-    }
+    if (tlRef.current) tlRef.current.kill();
 
-    /* Trigger CSS exit animation */
     const wrapper = wrapperRef.current;
-    if (wrapper) {
-      wrapper.classList.add(styles.exiting);
-      /* Wait for CSS transition to finish before unmounting */
-      wrapper.addEventListener(
-        'animationend',
-        () => { onComplete?.(); },
-        { once: true }
-      );
-    } else {
-      onComplete?.();
-    }
+    if (!wrapper) return onComplete?.();
+
+    gsap.to(wrapper, {
+      opacity:  0,
+      duration: 0.45,
+      ease:     'power2.inOut',
+      onComplete: () => onComplete?.(),
+    });
   }, [onComplete]);
 
-  /* ----------------------------------------------------------
-     MAIN ANIMATION LOOP
-     ---------------------------------------------------------- */
+  /* ---- Main animation ---- */
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const rPath = rPathRef.current;
+    const vPath = vPathRef.current;
+    if (!rPath || !vPath) return;
 
-    const ctx = canvas.getContext('2d');
+    /* Measure actual path lengths for perfect dashoffset */
+    const rLen = rPath.getTotalLength();
+    const vLen = vPath.getTotalLength();
 
-    /* --------------------------------------------------------
-       SIZE CANVAS to physical pixel ratio for crisp rendering
-       -------------------------------------------------------- */
-    function sizeCanvas() {
-      const dpr = window.devicePixelRatio || 1;
-      const w   = window.innerWidth;
-      const h   = window.innerHeight;
+    /* Set initial state — paths invisible */
+    gsap.set([rPath, vPath], { opacity: 1 });
+    gsap.set(rPath, { strokeDasharray: rLen, strokeDashoffset: rLen });
+    gsap.set(vPath, { strokeDasharray: vLen, strokeDashoffset: vLen });
+    gsap.set(nameRef.current, { opacity: 0, y: 8 });
+    gsap.set(dotRef.current,  { scale: 0, opacity: 0, transformOrigin: 'center' });
 
-      canvas.width  = w * dpr;
-      canvas.height = h * dpr;
-      canvas.style.width  = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.scale(dpr, dpr);
-    }
+    const tl = gsap.timeline({ delay: T.R_START / 1000 });
+    tlRef.current = tl;
 
-    sizeCanvas();
+    /* 1. Draw R */
+    tl.to(rPath, {
+      strokeDashoffset: 0,
+      duration: (T.R_END - T.R_START) / 1000,
+      ease:     'power2.inOut',
+    });
 
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    const cx = W / 2;   /* center x */
-    const cy = H / 2;   /* center y */
+    /* 2. Dot appears (the period after RV) */
+    tl.to(dotRef.current, {
+      scale:    1,
+      opacity:  1,
+      duration: 0.18,
+      ease:     'back.out(2)',
+    }, `-=${(T.R_END - T.V_START + 150) / 1000 * -1}`);
 
-    /* --------------------------------------------------------
-       PRECOMPUTE GRID LINE POSITIONS
-       Lines are stored as { pos, isMajor } arrays for
-       horizontal (y positions) and vertical (x positions).
-       -------------------------------------------------------- */
+    /* 3. Draw V */
+    tl.to(vPath, {
+      strokeDashoffset: 0,
+      duration: (T.V_END - T.V_START) / 1000,
+      ease:     'power2.inOut',
+    }, `+=${(T.V_START - T.R_END) / 1000}`);
 
-    /* Horizontal lines — y positions from center outward */
-    const hLines = [];
-    /* Lines going UP from center */
-    for (let y = cy; y >= -CELL_SIZE; y -= CELL_SIZE) {
-      const idx = Math.round((cy - y) / CELL_SIZE);
-      hLines.push({ y, isMajor: idx % 5 === 0, distFromCenter: cy - y });
-    }
-    /* Lines going DOWN from center (skip center — already added) */
-    for (let y = cy + CELL_SIZE; y <= H + CELL_SIZE; y += CELL_SIZE) {
-      const idx = Math.round((y - cy) / CELL_SIZE);
-      hLines.push({ y, isMajor: idx % 5 === 0, distFromCenter: y - cy });
-    }
+    /* 4. Name fades in */
+    tl.to(nameRef.current, {
+      opacity:  1,
+      y:        0,
+      duration: 0.5,
+      ease:     'power3.out',
+    }, `+=${(T.NAME_IN - T.V_END) / 1000}`);
 
-    /* Vertical lines — x positions from center outward */
-    const vLines = [];
-    /* Lines going LEFT from center */
-    for (let x = cx; x >= -CELL_SIZE; x -= CELL_SIZE) {
-      const idx = Math.round((cx - x) / CELL_SIZE);
-      vLines.push({ x, isMajor: idx % 5 === 0, distFromCenter: cx - x });
-    }
-    /* Lines going RIGHT from center */
-    for (let x = cx + CELL_SIZE; x <= W + CELL_SIZE; x += CELL_SIZE) {
-      const idx = Math.round((x - cx) / CELL_SIZE);
-      vLines.push({ x, isMajor: idx % 5 === 0, distFromCenter: x - cx });
-    }
+    /* 5. Hold, then exit */
+    tl.call(handleExit, null, `+=${(T.EXIT - T.NAME_IN) / 1000 + 0.5}`);
 
-    /* Maximum distance from center to any corner */
-    const maxDist = Math.sqrt(cx * cx + cy * cy);
-
-    /* --------------------------------------------------------
-       DRAW FRAME
-       Called every rAF tick with elapsed time in ms.
-       -------------------------------------------------------- */
-    function drawFrame(elapsed) {
-      /* Clear to background color */
-      ctx.fillStyle = BG_COLOR;
-      ctx.fillRect(0, 0, W, H);
-
-      /* ---- PHASE 1: GRID DRAW ---- */
-      if (elapsed >= T_GRID_START) {
-        const gridProgress = Math.min(
-          1,
-          (elapsed - T_GRID_START) / (T_GRID_END - T_GRID_START)
-        );
-        const easedGrid = easeOutQuart(gridProgress);
-
-        /* How far from center lines have drawn (in px) */
-        const drawRadius = easedGrid * (maxDist + CELL_SIZE);
-
-        /* Draw horizontal lines */
-        hLines.forEach(({ y, isMajor, distFromCenter }) => {
-          if (distFromCenter > drawRadius) return;
-
-          /* How much of this line has extended (0→1) */
-          /* Lines further from center start later */
-          const lineStart = distFromCenter / (maxDist + CELL_SIZE);
-          const lineProgress = Math.min(
-            1,
-            (easedGrid - lineStart) / (1 - lineStart + 0.001)
-          );
-
-          if (lineProgress <= 0) return;
-
-          ctx.beginPath();
-          ctx.strokeStyle = isMajor ? MAJOR_COLOR : LINE_COLOR;
-          ctx.lineWidth   = 0.5;
-          ctx.globalAlpha = isMajor ? 0.85 : 0.55;
-          ctx.moveTo(0, y);
-          ctx.lineTo(W, y);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-        });
-
-        /* Draw vertical lines */
-        vLines.forEach(({ x, isMajor, distFromCenter }) => {
-          if (distFromCenter > drawRadius) return;
-
-          const lineStart = distFromCenter / (maxDist + CELL_SIZE);
-          const lineProgress = Math.min(
-            1,
-            (easedGrid - lineStart) / (1 - lineStart + 0.001)
-          );
-
-          if (lineProgress <= 0) return;
-
-          ctx.beginPath();
-          ctx.strokeStyle = isMajor ? MAJOR_COLOR : LINE_COLOR;
-          ctx.lineWidth   = 0.5;
-          ctx.globalAlpha = isMajor ? 0.85 : 0.55;
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, H);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-        });
-
-        /* Center crosshair dot — appears at t=0 */
-        const dotOpacity = Math.min(1, elapsed / 200);
-        ctx.beginPath();
-        ctx.arc(cx, cy, 2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(139, 94, 60, ${dotOpacity * 0.6})`;
-        ctx.fill();
-      }
-
-      /* ---- PHASE 2: NAME STROKE ---- */
-      if (elapsed >= T_NAME_START) {
-        const nameProgress = Math.min(
-          1,
-          (elapsed - T_NAME_START) / (T_NAME_END - T_NAME_START)
-        );
-        const easedName = easeOutCubic(nameProgress);
-
-        drawName(ctx, W, H, easedName);
-      }
-
-      /* ---- PHASE 3: EXIT ---- */
-      if (elapsed >= T_EXIT_START) {
-        const exitProgress = Math.min(
-          1,
-          (elapsed - T_EXIT_START) / (T_TOTAL - T_EXIT_START)
-        );
-        /* Fade the entire canvas — handled by CSS class, not canvas */
-        /* Canvas just holds its final state */
-      }
-
-      /* Trigger CSS exit */
-      if (elapsed >= T_EXIT_START && !exitedRef.current) {
-        const wrapper = wrapperRef.current;
-        if (wrapper && !wrapper.classList.contains(styles.exiting)) {
-          wrapper.classList.add(styles.exiting);
-        }
-      }
-
-      if (elapsed >= T_TOTAL) {
-        handleExit();
-      }
-    }
-
-    /* --------------------------------------------------------
-       DRAW NAME
-       Simulates SVG stroke-dashoffset via canvas clipping.
-       Clips a reveal rectangle that grows left→right over time.
-       -------------------------------------------------------- */
-    function drawName(ctx, W, H, progress) {
-      const fontSize = Math.min(
-        Math.max(W * 0.065, 32),
-        96
-      );
-
-      ctx.save();
-
-      /* Set font to measure text */
-      ctx.font          = `300 ${fontSize}px ${NAME_FONT}`;
-      ctx.textBaseline  = 'middle';
-      ctx.textAlign     = 'center';
-
-      const name      = 'RONAK VAGHELA';
-      const metrics   = ctx.measureText(name);
-      const textWidth = metrics.width;
-      const textX     = W / 2;
-      const textY     = H / 2;
-
-      /* Clip to a rectangle that grows from left to right */
-      const revealWidth = textWidth * progress + fontSize * 0.1;
-      const clipX       = textX - textWidth / 2 - fontSize * 0.05;
-
-      ctx.beginPath();
-      ctx.rect(clipX, textY - fontSize, revealWidth, fontSize * 2);
-      ctx.clip();
-
-      /* Draw name fill */
-      ctx.fillStyle   = NAME_COLOR;
-      ctx.globalAlpha = 0.9;
-      ctx.fillText(name, textX, textY);
-
-      ctx.restore();
-
-      /* Sub-label — role title, fades in after name is drawn */
-      if (progress > 0.8) {
-        const labelProgress = (progress - 0.8) / 0.2;
-        const labelSize     = Math.max(fontSize * 0.16, 11);
-        const labelY        = textY + fontSize * 0.75;
-
-        ctx.save();
-        ctx.font          = `400 ${labelSize}px "JetBrains Mono", monospace`;
-        ctx.textBaseline  = 'middle';
-        ctx.textAlign     = 'center';
-        ctx.fillStyle     = 'rgba(122, 110, 95, 1)';
-        ctx.globalAlpha   = labelProgress * 0.7;
-        ctx.letterSpacing = '0.2em';
-
-        /* Track label spacing manually for canvas */
-        const label     = 'FULL STACK DEVELOPER';
-        ctx.fillText(label, W / 2, labelY);
-        ctx.restore();
-      }
-    }
-
-    /* --------------------------------------------------------
-       RAF LOOP
-       -------------------------------------------------------- */
-    function tick(timestamp) {
-      if (!startRef.current) startRef.current = timestamp;
-      const elapsed = timestamp - startRef.current;
-
-      drawFrame(elapsed);
-
-      if (!exitedRef.current) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    }
-
-    rafRef.current = requestAnimationFrame(tick);
-
-    /* Cleanup on unmount */
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    return () => tl.kill();
   }, [handleExit]);
-
-  /* ----------------------------------------------------------
-     SKIP on click or keydown
-     ---------------------------------------------------------- */
-  function handleSkip() {
-    handleExit();
-  }
-
-  function handleKeyDown(e) {
-    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      handleExit();
-    }
-  }
 
   return (
     <div
       ref={wrapperRef}
       className={styles.loaderWrapper}
-      onClick={handleSkip}
-      onKeyDown={handleKeyDown}
+      onClick={handleExit}
+      onKeyDown={e => ['Enter', ' ', 'Escape'].includes(e.key) && handleExit()}
       role="button"
       tabIndex={0}
-      aria-label="Loading portfolio. Click or press any key to skip."
+      aria-label="Loading. Click to skip."
     >
-      <canvas
-        ref={canvasRef}
-        className={styles.canvas}
-      />
+      {/* Centre stage */}
+      <div className={styles.stage}>
 
-      {/* Skip hint — appears after 800ms via CSS animation-delay */}
+        {/* RV SVG monogram */}
+        <svg
+          className={styles.monogram}
+          viewBox="0 0 170 110"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          {/* R stroke */}
+          <path
+            ref={rPathRef}
+            d={RV_PATHS.R}
+            stroke="#2C2416"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+
+          {/* V stroke */}
+          <path
+            ref={vPathRef}
+            d={RV_PATHS.V}
+            stroke="#2C2416"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+
+          {/* Period dot — appears after R is drawn */}
+          <circle
+            ref={dotRef}
+            cx="160"
+            cy="95"
+            r="2.5"
+            fill="#8B5E3C"
+          />
+        </svg>
+
+        {/* Full name — fades in below the monogram */}
+        <div ref={nameRef} className={styles.nameReveal}>
+          <span className={styles.nameText}>Ronak Vaghela</span>
+          <span className={styles.nameRole}>Full-Stack Developer</span>
+        </div>
+
+      </div>
+
+      {/* Skip hint */}
       <div className={styles.skipHint} aria-hidden="true">
         <span className={styles.skipText}>click to skip</span>
       </div>

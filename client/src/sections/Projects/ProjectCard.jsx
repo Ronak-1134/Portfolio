@@ -1,16 +1,32 @@
 /* ============================================================
-   ProjectCard.jsx — Portrait orientation for horizontal strip
+   ProjectCard.jsx — Portrait card with 3D tilt
    ============================================================ */
 
-import Tag    from '../../components/ui/Tag';
-import styles from './ProjectCard.module.css';
+import { useCallback } from 'react';
+import { useTilt }  from '../../hooks/useTilt';
+import Tag          from '../../components/ui/Tag';
+import styles       from './ProjectCard.module.css';
 
 export default function ProjectCard({ project, featured = false, cardRef }) {
   const { number, title, description, tags, links } = project;
 
+  const tiltRef = useTilt({
+    maxX:  6,
+    maxY:  8,
+    glare: true,
+    scale: 1.015,
+  });
+
+  /* Merge the GSAP tilt ref with the parent's cardRef (for entrance animation) */
+  const setRefs = useCallback(node => {
+    tiltRef.current = node;
+    if (typeof cardRef === 'function') cardRef(node);
+    else if (cardRef) cardRef.current = node;
+  }, [tiltRef, cardRef]);
+
   return (
     <article
-      ref={cardRef}
+      ref={setRefs}
       className={`${styles.card} ${featured ? styles.cardFeatured : ''}`}
       aria-label={`Project: ${title}`}
       data-cursor="project"
@@ -56,7 +72,7 @@ export default function ProjectCard({ project, featured = false, cardRef }) {
         </div>
       </div>
 
-      {/* Body — grows to fill portrait height */}
+      {/* Body */}
       <div className={styles.cardBody}>
         <h3 className={`${styles.cardTitle} ${featured ? styles.cardTitleFeatured : ''}`}>
           {title}
@@ -64,14 +80,13 @@ export default function ProjectCard({ project, featured = false, cardRef }) {
         <p className={styles.cardDesc}>{description}</p>
       </div>
 
-      {/* Bottom — tags + annotation */}
+      {/* Bottom */}
       <div className={styles.cardBottom}>
         <div className={styles.cardTags} aria-label="Technologies">
           {tags.slice(0, featured ? 6 : 4).map(tag => (
             <Tag key={tag} label={tag} variant="ghost" />
           ))}
         </div>
-
         <div className={styles.annotationRow} aria-hidden="true">
           <span className={styles.annotationArrow} />
           <span className={styles.annotationLabel}>

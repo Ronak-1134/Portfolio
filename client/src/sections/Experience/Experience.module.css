@@ -44,6 +44,29 @@
   background: var(--color-surface, #EDE8DC);
 }
 
+/* Hover — entire entry darkens slightly */
+.entry:hover {
+  background: var(--color-surface, #EDE8DC);
+}
+
+.entryAlt:hover {
+  background: var(--color-surface-hover, #E5DFD0);
+}
+
+/* Content darkens on entry hover */
+.entry:hover .company {
+  color: var(--color-ink-primary, #2C2416);
+}
+
+.entry:hover .description {
+  color: var(--color-ink-primary, #2C2416);
+}
+
+.entry:hover .bgName {
+  opacity: 0.85;
+  -webkit-text-stroke-color: var(--color-ink-ghost, #B5AA96);
+}
+
 /* Registration marks */
 .corner {
   position: absolute;
@@ -177,6 +200,7 @@
   color:       var(--color-ink-secondary, #7A6E5F);
   margin:      0;
   opacity:     0;  /* GSAP */
+  transition:  color var(--duration-base, 240ms) ease;
 }
 
 /* Tags */
@@ -202,8 +226,8 @@
    ============================================================ */
 @media (max-width: 900px) {
   .bgName {
-    font-size: clamp(3.5rem, 14vw, 8rem);
-    opacity:   0.4;
+    font-size: clamp(3rem, 14vw, 8rem);
+    opacity:   0.35;
   }
 
   .content,
@@ -215,16 +239,46 @@
 
 @media (max-width: 600px) {
   .entry {
-    padding: var(--space-10, 40px) 0;
+    padding: var(--space-8, 32px) 0;
+  }
+
+  /* Full-bleed reset on mobile — too cramped otherwise */
+  .entry {
+    width:     100%;
+    left:      auto;
+    transform: none;
   }
 
   .bgName {
-    font-size: clamp(2.5rem, 12vw, 5rem);
-    opacity:   0.3;
+    font-size:  clamp(2rem, 11vw, 4rem);
+    opacity:    0.2;
+    /* Keep centred but less intrusive */
+    top:        var(--space-6, 24px);
+    transform:  none;
+    position:   absolute;
   }
 
-  .corner {
-    display: none;
+  .content,
+  .entryAlt .content {
+    margin:  0 var(--content-padding);
+    padding: 0;
+    /* Shift content down past the faint bg name */
+    padding-top: clamp(3rem, 12vw, 5rem);
+  }
+
+  .company {
+    font-size: var(--text-lg, clamp(1.25rem, 1rem + 1vw, 1.75rem));
+  }
+
+  .tags {
+    gap: var(--space-1, 4px);
+  }
+
+  .corner { display: none; }
+
+  .entryDivider {
+    left:  var(--content-padding);
+    right: var(--content-padding);
   }
 }
 

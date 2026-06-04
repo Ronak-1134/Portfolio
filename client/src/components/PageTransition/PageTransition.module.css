@@ -1,0 +1,39 @@
+/* ============================================================
+   PageTransition.module.css
+   ============================================================ */
+
+/* ---- LOADER EXIT CURTAIN ---- */
+/* Full-screen cream panel swept away after loader */
+.curtain {
+  position:         fixed;
+  inset:            0;
+  z-index:          9997; /* below loader (9998), above everything else */
+  background-color: var(--color-bg, #F5F0E8);
+  pointer-events:   none;
+  /* transform-origin set by Framer Motion variant */
+}
+
+/* ---- SECTION REVEAL WRAP ---- */
+.sectionRevealWrap {
+  position: relative;
+  /* NO overflow:hidden — that was clipping content before GSAP ran */
+}
+
+/* The sweeping panel */
+.revealPanel {
+  position:         absolute;
+  inset:            0;
+  background-color: var(--color-bg, #F5F0E8);
+  z-index:          var(--z-raised, 10);
+  pointer-events:   none;
+  transform-origin: top;
+  transform:        scaleY(1); /* visible until GSAP sweeps it away */
+}
+
+/* ---- REDUCED MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+  .curtain,
+  .revealPanel {
+    display: none;
+  }
+}

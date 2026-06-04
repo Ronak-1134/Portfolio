@@ -38,6 +38,8 @@
   align-items:     baseline;
   text-decoration: none;
   line-height:     1;
+  will-change:     transform, opacity;
+  transform-origin: left center;
 }
 
 .brandRV {
@@ -274,17 +276,15 @@
     align-items:   flex-start;
   }
 
-  .navLink:last-child {
-    border-bottom: none;
-  }
+  .navLink:last-child { border-bottom: none; }
 
-  .navLinkText {
-    font-size: var(--text-sm, 0.75rem);
-  }
+  .navLinkText { font-size: var(--text-sm, 0.75rem); }
 
-  .navDivider {
-    display: none;
-  }
+  .navDivider { display: none; }
+
+  /* Hide clock in mobile menu — saves space */
+  .availabilityDivider,
+  .availabilityDivider + * { display: none; }
 
   .availability {
     margin-bottom:  var(--space-4, 16px);
@@ -292,6 +292,12 @@
     border-bottom:  0.5px solid var(--color-stroke, #C4B89A);
     width:          100%;
   }
+}
+
+/* Very small screens — shrink brand */
+@media (max-width: 380px) {
+  .brandRV { font-size: 1rem; }
+  .navInner { padding: 0 var(--space-4, 16px); }
 }
 
 /* ---- REDUCED MOTION ---- */
