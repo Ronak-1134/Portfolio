@@ -101,7 +101,7 @@
   font-weight:    400;
   letter-spacing: var(--tracking-mono, 0.12em);
   text-transform: uppercase;
-  color:          var(--color-ink-ghost, #B5AA96);
+  color:          var(--color-ink-secondary, #7A6E5F);
 }
 
 .rowName {
@@ -110,7 +110,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color:          var(--color-ink-ghost, #B5AA96);
-  opacity:        0.6;
   text-align:     right;
 }
 

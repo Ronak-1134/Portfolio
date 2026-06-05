@@ -31,13 +31,13 @@ const LINKS = [
     annotation: 'primary contact',
   },
   {
-    label: 'GitHub', value: 'github.com/ronakvaghela',
-    href: 'https://github.com/ronakvaghela', external: true,
+    label: 'GitHub', value: 'github.com/Ronak',
+    href: 'https://github.com/Ronak-1134', external: true,
     annotation: 'source code',
   },
   {
-    label: 'LinkedIn', value: 'linkedin.com/in/ronak-vaghela',
-    href: 'https://linkedin.com/in/ronak-vaghela', external: true,
+    label: 'LinkedIn', value: 'linkedin.com/in/Ronak',
+    href: 'https://www.linkedin.com/in/ronak-vaghela11/', external: true,
     annotation: 'professional',
   },
 ];
@@ -179,8 +179,6 @@ export default function Contact() {
       unfoldPaper();
     }
   }
-
-  /* Resume URL — set VITE_RESUME_URL in .env.local */
   const resumeUrl = import.meta.env.VITE_RESUME_URL || '/ronak-vaghela-resume.pdf';
   const disabled  = status === 'sending' || status === 'success';
 
@@ -192,9 +190,31 @@ export default function Contact() {
 
         {/* Heading */}
         <div ref={headingRef} className={styles.headingBlock}>
-          <h2 className={styles.heading}>Draw up a brief.</h2>
-          <div className={styles.headingRule} aria-hidden="true" />
-          <p className={styles.subline}>Open to full-time roles and interesting problems.</p>
+          <div className={styles.headingInner}>
+            <div>
+              <h2 className={styles.heading}>Draw up a brief.</h2>
+              <div className={styles.headingRule} aria-hidden="true" />
+              <p className={styles.subline}>Open to full-time roles and interesting problems.</p>
+            </div>
+            <div className={styles.headingMeta}>
+              <div className={styles.headingMetaItem}>
+                <span className={styles.headingMetaLabel}>Response time</span>
+                <span className={styles.headingMetaValue}>Within 24 hours</span>
+              </div>
+              <div className={styles.headingMetaItem}>
+                <span className={styles.headingMetaLabel}>Availability</span>
+                <span className={styles.headingMetaValue}>Open · From Jul 2025</span>
+              </div>
+              <div className={styles.headingMetaItem}>
+                <span className={styles.headingMetaLabel}>Preferred roles</span>
+                <span className={styles.headingMetaValue}>Full-Stack · AI · Frontend</span>
+              </div>
+              <div className={styles.headingMetaItem}>
+                <span className={styles.headingMetaLabel}>Location</span>
+                <span className={styles.headingMetaValue}>Ahmedabad · Open to remote</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className={styles.body}>
@@ -225,12 +245,11 @@ export default function Contact() {
                 variant="ghost"
                 href={resumeUrl}
                 target="_blank"
-                download="ronak-vaghela-resume.pdf"
+                download="Ronak-Vaghela-Resume.pdf"
               >
                 Download Resume ↓
               </Button>
               <p className={styles.resumeHint}>
-                Set VITE_RESUME_URL in .env.local to any public PDF link
               </p>
             </div>
           </div>
@@ -239,7 +258,7 @@ export default function Contact() {
           <div
             ref={paperRef}
             className={`${styles.paper} ${isFolded ? styles.paperSent : ''}`}
-            style={{ opacity: 0 }}
+            style={{ opacity: 1 }}
           >
             {status === 'success' ? (
               <Envelope

@@ -12,7 +12,7 @@ import styles                from './Education.module.css';
 /* Document metadata */
 const DOC_NUMBER  = 'FORM-AC/2024/0339';
 const ISSUED_BY   = 'L.D. College of Engineering, Ahmedabad';
-const ISSUED_DATE = '2024–2026';
+const ISSUED_DATE = '2022–2026';
 
 export default function Education() {
   const sectionRef  = useRef(null);

@@ -10,19 +10,19 @@ import CountUp               from '../../components/CountUp/CountUp';
 import Clock                 from '../../components/Clock/Clock';
 import styles                from './Hero.module.css';
 
-const BIO = 'Computer Engineering student at LDCE Ahmedabad building full-stack systems with clean architecture and a bias for performance. Interned at TatvaSoft and IBM. Interested in AI, systems design, and problems worth solving.';
+const BIO = 'Computer Engineering student at LDCE, specializing in high-performance, full-stack systems with clean architecture. Ex-Intern at IBM & TatvaSoft. Passionate about AI, systems design, and tackling complex, high-value problems. Open to freelance opportunities and technical collaborations.';
 const EDUCATION_SUMMARY = 'B.E Computer Engineering · LDCE, Ahmedabad (GTU) · 2022–26';
 
 const STATS = [
-  { target: 7.92,  decimals: 2, suffix: '',   label: 'CGPA',             duration: 1600 },
-  { target: 2,     decimals: 0, suffix: '',   label: 'Internships',       duration: 900  },
-  { target: 300,   decimals: 0, suffix: '+',  label: 'Problems solved',   duration: 1800 },
+  { target: 8.00,  decimals: 2, suffix: '',   label: 'CGPA',             duration: 1600 },
+  { target: 3,     decimals: 0, suffix: '',   label: 'Internships',       duration: 900  },
+  { target: 350,   decimals: 0, suffix: '+',  label: 'Problems solved',   duration: 1800 },
 ];
 
 const CURRENTLY = [
-  { label: 'Building',  value: 'This portfolio'                    },
-  { label: 'Reading',   value: 'Designing Data-Intensive Apps'      },
-  { label: 'Learning',  value: 'AI Agents & Multiagent Systems'     },
+  { label: 'Building',  value: 'Working on QuestLog'                    },
+  { label: 'Reading',   value: 'Beyond Good and Evil'      },
+  { label: 'Learning',  value: 'AI Agents & DevOps'     },
 ];
 
 const GITHUB_USER = 'ronakvaghela';
@@ -238,9 +238,9 @@ export default function Hero() {
               <Button variant="primary" onClick={() =>
                 document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
               }>
-                Draw up a brief
+                Draw up a brief →
               </Button>
-              <Button variant="ghost" onClick={() =>
+              <Button variant="text" onClick={() =>
                 document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
               }>
                 View work
@@ -249,11 +249,11 @@ export default function Hero() {
 
             {/* Socials */}
             <div className={styles.socialRow}>
-              <a href="https://github.com/ronakvaghela" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>GitHub</a>
+              <a href="https://github.com/Ronak-1134" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>GitHub</a>
               <span className={styles.socialDot} aria-hidden="true" />
-              <a href="https://linkedin.com/in/ronak-vaghela" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>LinkedIn</a>
+              <a href="https://www.linkedin.com/in/ronak-vaghela11/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>LinkedIn</a>
               <span className={styles.socialDot} aria-hidden="true" />
-              <a href="mailto:ronakvaghela3355@gmail.com" className={styles.socialLink}>Email</a>
+              <a href="mailto:vaghelaronak1134@gmail.com" className={styles.socialLink}>Email</a>
             </div>
           </div>
 

@@ -62,7 +62,7 @@ export default function CountUp({
             const elapsed  = timestamp - startRef.current;
             const progress = Math.min(elapsed / duration, 1);
             const eased    = easeOutQuart(progress);
-            const current  = eased * target;
+            const current  = Math.min(eased * target, target);
 
             setDisplay(
               `${prefix}${current.toFixed(decimals)}${suffix}`

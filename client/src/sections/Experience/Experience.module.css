@@ -6,7 +6,7 @@
 .experience {
   position:       relative;
   padding-top:    var(--section-padding);
-  padding-bottom: var(--section-padding);
+  padding-bottom: calc(var(--section-padding) / 2);
   z-index:        var(--z-base, 1);
 }
 
@@ -36,7 +36,7 @@
   left:     50%;
   transform: translateX(-50%);
   overflow: hidden;
-  padding:  var(--space-12, 48px) 0;
+  padding:  var(--space-8, 32px) 0;
 }
 
 /* Alternate entries get a slightly deeper background */
