@@ -69,7 +69,8 @@ export default function App() {
           <SectionDivider index={3} />
           <Projects />
           <Marquee
-            speed={28} size="md" separator="—"
+            speed={32}
+            separator="·"
             items={['Govt-Doc-Vault','Task Manager','Gaming Website','Portfolio','Auth System','Data Dashboard','React','Node.js','GSAP','Firebase','MongoDB','PostgreSQL']}
           />
           <SectionDivider index={4} />

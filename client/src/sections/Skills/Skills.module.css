@@ -53,11 +53,7 @@
   display:    block;
   width:      32px;
   height:     2px;
-  background: linear-gradient(
-    to right,
-    var(--color-ink-secondary, #7A6E5F) 70%,
-    var(--color-stroke, #C4B89A) 70%
-  );
+  background: var(--color-ink-secondary, #7A6E5F);
 }
 
 .legendText {
@@ -109,7 +105,8 @@
   font-size:      0.55rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color:          var(--color-ink-ghost, #B5AA96);
+  color:          var(--color-ink-secondary, #7A6E5F);
+  opacity:        0.8;
   text-align:     right;
 }
 

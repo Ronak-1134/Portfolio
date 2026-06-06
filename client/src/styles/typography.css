@@ -473,8 +473,9 @@ pre,
   position:   relative;
   width:      100%;
   max-width:  var(--max-width, 1200px);
-  margin:     0 auto;
+  margin:     calc(var(--section-padding) * -0.45) auto;
   padding:    0 var(--content-padding);
+  z-index:    var(--z-raised, 10);
 }
 
 .app-divider__rule {
