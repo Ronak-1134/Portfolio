@@ -3,14 +3,15 @@
    Ronak Vaghela Portfolio — GSAP Configuration
    ============================================================ */
 
-import { gsap }          from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap }           from 'gsap';
+import { ScrollTrigger }  from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { CustomEase }    from 'gsap/CustomEase';
+import { CustomEase }     from 'gsap/CustomEase';
+
+// ✅ Register at module level — before any function calls
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, CustomEase);
 
 export function registerGSAP() {
-  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, CustomEase);
-
   CustomEase.create('unfold',  'M0,0 C0.16,1 0.3,1 1,1');
   CustomEase.create('ink',     'M0,0 C0.4,0 0.2,1 1,1');
   CustomEase.create('measure', 'M0,0 C0.25,0 0.1,1 1,1');
@@ -151,13 +152,9 @@ export function scrollToSection(sectionId) {
   if (!el) return;
 
   const navHeight = 56;
-  const top       = el.getBoundingClientRect().top + window.scrollY - navHeight;
+  const top = el.getBoundingClientRect().top + window.scrollY - navHeight;
 
-  gsap.to(window, {
-    scrollTo:  { y: top, autoKill: true },
-    duration:  1.1,
-    ease:      'power3.inOut',
-  });
+  window.scrollTo({ top, behavior: 'smooth' });
 }
 
 export { gsap, ScrollTrigger };

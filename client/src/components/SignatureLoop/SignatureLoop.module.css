@@ -1,0 +1,48 @@
+.wrap {
+  width:           100%;
+  height:          100%;
+  min-height:      340px;
+  background:      var(--color-surface, #EDE8DC);
+  border:          0.5px solid var(--color-stroke, #C4B89A);
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             var(--space-6, 24px);
+  position:        relative;
+}
+
+/* Faint grid lines inside the box — graph paper feel */
+.wrap::before {
+  content:    '';
+  position:   absolute;
+  inset:      0;
+  background-image:
+    linear-gradient(var(--color-stroke, #C4B89A) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, var(--color-stroke, #C4B89A) 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  opacity:    0.25;
+  pointer-events: none;
+}
+
+.svg {
+  width:    clamp(140px, 50%, 220px);
+  height:   auto;
+  position: relative;
+  z-index:  1;
+  filter:   drop-shadow(0 1px 6px rgba(44,36,22,0.06));
+}
+
+.label {
+  font-family:    var(--font-mono, 'JetBrains Mono', monospace);
+  font-size:      0.55rem;
+  letter-spacing: var(--tracking-wide, 0.15em);
+  text-transform: uppercase;
+  color:          var(--color-ink-ghost, #B5AA96);
+  position:       relative;
+  z-index:        1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svg { opacity: 1; }
+}

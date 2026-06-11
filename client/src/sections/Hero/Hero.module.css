@@ -361,8 +361,8 @@
 .photoWrap {
   position:   relative;
   overflow:   hidden;
-  clip-path:  polygon(0 0, 100% 2%, 98% 100%, 1% 98%);
   background: var(--color-surface, #EDE8DC);
+  min-height: 340px;
 }
 
 .photo {

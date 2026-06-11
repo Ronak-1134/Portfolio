@@ -8,6 +8,7 @@ import { useReducedMotion }  from '../../hooks/useReducedMotion';
 import Button                from '../../components/ui/Button';
 import CountUp               from '../../components/CountUp/CountUp';
 import Clock                 from '../../components/Clock/Clock';
+import SignatureLoop          from '../../components/SignatureLoop/SignatureLoop';
 import styles                from './Hero.module.css';
 
 const BIO = 'Computer Engineering student at LDCE, specializing in high-performance, full-stack systems with clean architecture. Ex-Intern at IBM & TatvaSoft. Passionate about AI, systems design, and tackling complex, high-value problems. Open to freelance opportunities and technical collaborations.';
@@ -20,12 +21,12 @@ const STATS = [
 ];
 
 const CURRENTLY = [
-  { label: 'Building',  value: 'Working on QuestLog'                    },
-  { label: 'Reading',   value: 'Beyond Good and Evil'      },
-  { label: 'Learning',  value: 'AI Agents & DevOps'     },
+  { label: 'Building',  value: 'QuestLog'                    },
+  { label: 'Reading',   value: 'Animal Farm'      },
+  { label: 'Learning',  value: 'AI Agents & Multiagent Systems'     },
 ];
 
-const GITHUB_USER = 'ronakvaghela';
+const GITHUB_USER = 'Ronak';
 
 function useLastCommit() {
   const [data, setData] = useState({ time: null, repo: null, loading: true });
@@ -251,47 +252,26 @@ export default function Hero() {
             <div className={styles.socialRow}>
               <a href="https://github.com/Ronak-1134" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>GitHub</a>
               <span className={styles.socialDot} aria-hidden="true" />
-              <a href="https://www.linkedin.com/in/ronak-vaghela11/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>LinkedIn</a>
+              <a href="https://www.linkedin.com/in/ronak-vaghela11/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>Linkdin</a>
+              <span className={styles.socialDot} aria-hidden="true" />
+              <a href="https://www.instagram.com/_ronak11__/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>Instagram</a>
+              <span className={styles.socialDot} aria-hidden="true" />
+              <a href="https://in.pinterest.com/vaghelaronak1134/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>Pintrest</a>
+              <span className={styles.socialDot} aria-hidden="true" />
+              <a href="https://github.com/Ronak-1134" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>Letterbox</a>
               <span className={styles.socialDot} aria-hidden="true" />
               <a href="mailto:vaghelaronak1134@gmail.com" className={styles.socialLink}>Email</a>
             </div>
           </div>
 
-          {/* RIGHT — PHOTO */}
+          {/* RIGHT — Signature */}
           <div className={styles.rightCol}>
             <div ref={photoWrapRef} className={styles.photoWrap}>
-
-              {/* Try loading photo; show fallback monogram if missing */}
-              <img
-                src="/ronak-vaghela.jpg"
-                alt="Ronak Vaghela"
-                className={styles.photo}
-                loading="eager"
-                draggable="false"
-                onError={e => {
-                  e.target.style.display = 'none';
-                  e.target.nextElementSibling.style.display = 'flex';
-                }}
-              />
-              <div className={styles.photoFallback} style={{ display: 'none' }}>
-                <span className={styles.photoFallbackMonogram}>RV</span>
-                <span className={styles.photoFallbackLabel}>Add photo → /public/ronak-vaghela.jpg</span>
-              </div>
-
-              <div className={styles.photoOverlay} aria-hidden="true" />
-
+              <SignatureLoop />
               <span className={`${styles.cornerMark} ${styles.cornerTL}`} aria-hidden="true" />
               <span className={`${styles.cornerMark} ${styles.cornerTR}`} aria-hidden="true" />
               <span className={`${styles.cornerMark} ${styles.cornerBL}`} aria-hidden="true" />
               <span className={`${styles.cornerMark} ${styles.cornerBR}`} aria-hidden="true" />
-
-              <div
-                className={styles.photoAnnotation}
-                ref={el => annoRefs.current[0] = el}
-                aria-hidden="true"
-              >
-                <span className={styles.annotationText}>Ahmedabad, 2024</span>
-              </div>
             </div>
           </div>
 
