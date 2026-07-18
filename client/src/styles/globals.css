@@ -218,3 +218,14 @@ hr { border: none; border-top: var(--border-solid); margin: 0; }
 .heroInner { min-width: 0; overflow-x: hidden; }
 .leftCol   { min-width: 0; }
 .bio, .eduSummary { word-break: break-word; overflow-wrap: break-word; }
+
+html, body { overflow-x: hidden; }
+.heroInner, .leftCol, .currently, .statsRow { min-width: 0; max-width: 100%; }
+.bio, .eduSummary { word-break: break-word; overflow-wrap: break-word; max-width: 100%; }
+
+.app-divider { overflow: hidden; }
+
+@media (max-width: 600px) {
+  .scrollNudge { display: none; }
+  .nameBlock { overflow: hidden; }
+}
