@@ -229,3 +229,13 @@ html, body { overflow-x: hidden; }
   .scrollNudge { display: none; }
   .nameBlock { overflow: hidden; }
 }
+
+/* ---- MOBILE OVERFLOW HARD FIX ---- */
+html { overflow-x: hidden; }
+body { overflow-x: hidden; }
+
+section { overflow-x: hidden; }
+
+.heroInner > * { min-width: 0; }
+
+html, body { overflow-x: hidden; }

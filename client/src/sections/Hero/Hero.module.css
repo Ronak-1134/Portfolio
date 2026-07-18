@@ -149,7 +149,7 @@
    ============================================================ */
 .heroBody {
   display:               grid;
-  grid-template-columns: 1fr 420px;
+  grid-template-columns: 1fr minmax(0, 420px);
   gap:                   var(--space-12, 48px);
   align-items:           start;
   flex:                  1;
