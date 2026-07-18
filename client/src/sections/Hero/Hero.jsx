@@ -23,7 +23,7 @@ const STATS = [
 const CURRENTLY = [
   { label: 'Building',  value: 'QuestLog'                    },
   { label: 'Reading',   value: 'Animal Farm'      },
-  { label: 'Learning',  value: 'AI Agents & Multiagent Systems'     },
+  { label: 'Learning',  value: 'AI Agents & DevOps'     },
 ];
 
 const GITHUB_USER = 'Ronak';
@@ -144,7 +144,7 @@ export default function Hero() {
             <span className={styles.metaItem}>Ahmedabad, Gujarat</span>
           </div>
           <div className={styles.topMetaRight}>
-            <span className={styles.metaItem}>Full-Stack · AI · Systems</span>
+            <span className={styles.metaItem}>Full-Stack · AI · DevOps</span>
             <span className={styles.metaDivider} />
             <Clock />
           </div>
@@ -258,7 +258,7 @@ export default function Hero() {
               <span className={styles.socialDot} aria-hidden="true" />
               <a href="https://in.pinterest.com/vaghelaronak1134/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>Pintrest</a>
               <span className={styles.socialDot} aria-hidden="true" />
-              <a href="https://github.com/Ronak-1134" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>Letterbox</a>
+              <a href="https://letterboxd.com/Ronakkk11/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>Letterbox</a>
               <span className={styles.socialDot} aria-hidden="true" />
               <a href="mailto:vaghelaronak1134@gmail.com" className={styles.socialLink}>Email</a>
             </div>

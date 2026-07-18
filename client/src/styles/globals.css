@@ -212,3 +212,9 @@ hr { border: none; border-top: var(--border-solid); margin: 0; }
   body { background: #fff; color: #000; cursor: auto; }
   .no-print { display: none !important; }
 }
+
+
+/* Mobile overflow fix */
+.heroInner { min-width: 0; overflow-x: hidden; }
+.leftCol   { min-width: 0; }
+.bio, .eduSummary { word-break: break-word; overflow-wrap: break-word; }
